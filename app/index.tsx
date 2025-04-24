@@ -33,9 +33,9 @@ export default function Index() {
                             <AntDesign name="arrowright" size={29} color="white" />
                         </View>
                         <View style={styles.listMusicCarrosel}>
-                            <Music name='My Way' url={require("../assets/images/image1Albuns.png")}></Music>
-                            <Music name='Breathe' url={require("../assets/images/image2Albuns.png")}></Music>
-                            <Music name='Sad But true' url={require("../assets/images/image3Albuns.png")}></Music>
+                            <Music name='My Way' url={{uri:"https://placecats.com/300/300"}}></Music>
+                            <Music name='Breathe' url={{uri:"https://placecats.com/300/300"}}></Music>
+                            <Music name='Sad But true' url={{uri:"https://placecats.com/300/300"}}></Music>
 
                         </View>
                     </View>
@@ -46,9 +46,9 @@ export default function Index() {
                         </View>
 
                         <View style={styles.favoritesList}>
-                            <Music mode='vertical' name='Mr. Fear' url={require("../assets/images/image4Albuns.png")} artist='SIAMÉS' />
-                            <Music mode='vertical' name='Borderline' url={require("../assets/images/image5Albuns.png")} artist='Tame Impala' />
-                            <Music mode='vertical' name='Decida' url={require("../assets/images/image6Albuns.png")} artist='Zezo Potiguar' />
+                            <Music mode='vertical' name='Mr. Fear' url={{uri:"https://placecats.com/300/300"}} artist='SIAMÉS' />
+                            <Music mode='vertical' name='Borderline' url={{uri:"https://placecats.com/300/300"}} artist='Tame Impala' />
+                            <Music mode='vertical' name='Decida' url={{uri:"https://placecats.com/300/300"}} artist='Zezo Potiguar' />
 
                         </View>
                     </View>
@@ -60,10 +60,10 @@ export default function Index() {
                         </View>
 
                         <View style={styles.albuns}>
-                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={require("../assets/images/Album1.png")} />
-                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={require("../assets/images/Album2.png")} />
-                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={require("../assets/images/Album3.png")} />
-                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={require("../assets/images/Album4.png")} />
+                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{uri:"https://placecats.com/300/300"}} />
+                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{uri:"https://placecats.com/300/300"}} />
+                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{uri:"https://placecats.com/300/300"}} />
+                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{uri:"https://placecats.com/300/300"}} />
                         </View>
                     </View>
                     <View>
@@ -73,8 +73,8 @@ export default function Index() {
                         </View>
 
                         <View style={styles.albuns}>
-                           <Music mode='grid' name='Ficar Monstrão' url={require("../assets/images/ImagePlaylist.png")}/>
-                           <Music mode='grid' name='As Melhores Clássicas' url={require("../assets/images/ImagePlaylist2.png")}/>
+                           <Music mode='grid' name='Ficar Monstrão' url={{uri:"https://placecats.com/300/300"}}/>
+                           <Music mode='grid' name='As Melhores Clássicas' url={{uri:"https://placecats.com/300/300"}}/>
                         </View>
                     </View>
                 </View>
