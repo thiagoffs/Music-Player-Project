@@ -1,11 +1,11 @@
 import { View, StyleSheet,Text, SafeAreaView} from "react-native";
 
-//Primeira tela do App
-export default function Index() {
+//Tela Playlist
+export default function PlayLists() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-      <Text style={{fontSize:30, color:"#fff",textAlign:"center"}}>Tela Musicas Principal</Text>
+      <Text style={{fontSize:30, color:"#fff",textAlign:"center"}}>Tela Playlists</Text>
       </View>
     </SafeAreaView>
   );
