@@ -14,6 +14,7 @@ export default function TabLayout() {
       <Tabs.Screen name="albums" options={{ title: "Álbuns" }} />
       <Tabs.Screen name="artists" options={{ title: "Artistas" }} />
       <Tabs.Screen name="playlists" options={{ title: "Playlists" }} />
+      <Tabs.Screen name="list/[type]" options={{ href: null }} />
     </Tabs>
   );
 }

@@ -12,7 +12,7 @@ export default function NavMenu() {
       <NavenuItem
         icon={require("@/assets/icons/music.png")}
         text={"Músicas"}
-        route="/(tabs)"
+        route="/"
       />
       <NavenuItem
         icon={require("@/assets/icons/album.png")}
