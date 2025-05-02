@@ -1,11 +1,11 @@
 import { View, StyleSheet,Text, SafeAreaView} from "react-native";
 
-//Primeira tela do App
-export default function Index() {
+//Tela Album
+export default function Album() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-      <Text style={{fontSize:30, color:"#fff",textAlign:"center"}}>Tela Musicas Principal</Text>
+        <Text style={{fontSize:30, color:"#fff",textAlign:"center"}}>Tela Álbuns</Text>
       </View>
     </SafeAreaView>
   );
@@ -19,4 +19,5 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+  
 });

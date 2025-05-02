@@ -60,9 +60,12 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     styleFotoGrid: {
-        width: 147,
+        width: "100%",
         height: 122,
         borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "white",
+        resizeMode:"cover"
     },
     songHorizontal: {
         marginVertical: 10
@@ -90,16 +93,14 @@ const styles = StyleSheet.create({
         color: "#A19E9E",
     },
     songGrid: {
-        width: "46%",
+        width: 147,
     },
     songTitleGrid: {
         fontSize: 20,
         color: "white",
         textAlign:"center"
-
     },
     songSubTitleGrid: {
-        borderColor:"red",
         fontSize: 13,
         color: "#A19E9E",
         textAlign:"center"

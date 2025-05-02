@@ -7,23 +7,28 @@ export default function NavMenu() {
       <NavenuItem
         icon={require("@/assets/icons/home.png")}
         text={"Início"}
-      />
+        route="/(tabs)/home"
+        />
       <NavenuItem
         icon={require("@/assets/icons/music.png")}
         text={"Músicas"}
+        route="/"
       />
       <NavenuItem
         icon={require("@/assets/icons/album.png")}
-        text={"Albums"}
-      />
+        text={"Álbuns"}
+        route="/(tabs)/albuns"
+        />
       <NavenuItem
         icon={require("@/assets/icons/artist.png")}
         text={"Artistas"}
-      />
+        route="/(tabs)/artists"
+        />
       <NavenuItem
         icon={require("@/assets/icons/playlist.png")}
         text={"Playlists"}
-      />
+        route="/(tabs)/playlists"
+        />
     </View>
   );
 }
