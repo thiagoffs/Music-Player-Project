@@ -25,7 +25,7 @@ export default function Home() {
                 <View style={{ gap: 17 }}>
                     <View style={styles.buttonRadio}>
                         <Image source={require("../../assets/images/ion_radio.png")} />
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.push("/radio")}>
                             <Text style={styles.text}>OUVIR RÁDIO</Text>
                         </TouchableOpacity>
                     </View>
