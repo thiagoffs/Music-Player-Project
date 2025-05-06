@@ -2,10 +2,12 @@ import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } 
 import React from "react";
 
 type Props = {
+    key: string;
     name?: string;
     artist?: string;
     url: ImageSourcePropType;
     mode?: "horizontal" | "vertical" | "grid";
+    path: string;
 };
 export default function Music({ name, url, artist, mode = "horizontal" }: Props) {
     if (mode === "horizontal") {

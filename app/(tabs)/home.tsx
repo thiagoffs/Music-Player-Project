@@ -37,10 +37,9 @@ export default function Home() {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.listMusicCarrosel}>
-                            <Music name='My Way' url={{ uri: "https://placecats.com/300/300" }}></Music>
-                            <Music name='Breathe' url={{ uri: "https://placecats.com/300/300" }}></Music>
-                            <Music name='Sad But true' url={{ uri: "https://placecats.com/300/300" }}></Music>
-
+                            <Music name='My Way' url={{ uri: "https://placecats.com/300/300" }} key = "example1" path = "/file/music/example.mp3"></Music>
+                            <Music name='Breathe' url={{ uri: "https://placecats.com/300/300" }} key = "example2" path = "/file/music/example.mp3"></Music>
+                            <Music name='Sad But true' url={{ uri: "https://placecats.com/300/300" }} key = "example3" path = "/file/music/example.mp3"></Music>
                         </View>
                     </View>
                     <View style={styles.favorite}>
@@ -52,9 +51,9 @@ export default function Home() {
                         </View>
 
                         <View style={styles.favoritesList}>
-                            <Music mode='vertical' name='Mr. Fear' url={{ uri: "https://placecats.com/300/300" }} artist='SIAMÉS' />
-                            <Music mode='vertical' name='Borderline' url={{ uri: "https://placecats.com/300/300" }} artist='Tame Impala' />
-                            <Music mode='vertical' name='Decida' url={{ uri: "https://placecats.com/300/300" }} artist='Zezo Potiguar' />
+                            <Music mode='vertical' name='Mr. Fear' url={{ uri: "https://placecats.com/300/300" }} artist='SIAMÉS' key = "example4" path = "/file/music/example.mp3" />
+                            <Music mode='vertical' name='Borderline' url={{ uri: "https://placecats.com/300/300" }} artist='Tame Impala' key = "example5" path = "/file/music/example.mp3" />
+                            <Music mode='vertical' name='Decida' url={{ uri: "https://placecats.com/300/300" }} artist='Zezo Potiguar' key = "example6" path = "/file/music/example.mp3" />
 
                         </View>
                     </View>
@@ -68,10 +67,10 @@ export default function Home() {
                         </View>
 
                         <View style={styles.albuns}>
-                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} />
-                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} />
-                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} />
-                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} />
+                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} key = "example7" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} key = "example8" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} key = "example9" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} key = "example10" path = "/file/music/example.mp3" />
                         </View>
                     </View>
                     <View>
@@ -83,9 +82,9 @@ export default function Home() {
                         </View>
 
                         <View style={styles.albuns}>
-                            <Music mode='grid' name='Ficar Monstrão' url={{ uri: "https://placecats.com/300/300" }} />
-                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} />
-                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} />
+                            <Music mode='grid' name='Ficar Monstrão' url={{ uri: "https://placecats.com/300/300" }} key = "example11" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key = "example12" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key = "example13" path = "/file/music/example.mp3" />
 
                         </View>
                     </View>
