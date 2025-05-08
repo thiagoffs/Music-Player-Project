@@ -18,8 +18,13 @@ export default function Index() {
   }
 
   const getMusics = async () => {
-    let foundMusics = await MediaLibrary.getAssetsAsync({ mediaType: "audio" });
-    setMusics(foundMusics);
+    getPermissions();
+    let foundMusics = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+    const songs = {
+      ...foundMusics,
+      assets: foundMusics.assets.filter((music) => music.duration && music.duration > 90),
+    };
+    setMusics(songs);
   }
 
   useEffect(() => {
@@ -42,8 +47,8 @@ export default function Index() {
         <FlatList
           data = { musics?.assets }
           renderItem ={ (infoItem) => <Music  
-              mode = "vertical"           
-              url={{ uri: "https://placecats.com/300/300" }} 
+              mode = "local"           
+              url={ require("../../assets/icons/default-song.png") } 
               name = {infoItem.item.filename} 
               key = { infoItem.item.id }
               path = { infoItem.item.uri }
