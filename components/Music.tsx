@@ -6,7 +6,7 @@ type Props = {
     name?: string;
     artist?: string;
     url: ImageSourcePropType;
-    mode?: "horizontal" | "vertical" | "grid";
+    mode?: "horizontal" | "vertical" | "grid" | "local";
     path: string;
 };
 export default function Music({ name, url, artist, mode = "horizontal" }: Props) {
@@ -14,8 +14,10 @@ export default function Music({ name, url, artist, mode = "horizontal" }: Props)
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
-    } else {
+    } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} />
+    } else {
+        return <LocalMusicIcon name={name} artist={artist} url={url} />
     }
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -52,6 +54,32 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
 
     );
 }
+function LocalMusicIcon({ name, url, artist }: { name?: string; url: ImageSourcePropType; artist?: string }) {
+    const formattedName = name?.split(".");
+    return (
+      <View
+        style={{ width: "100%", marginVertical: 10, paddingHorizontal: 10 }}
+      >
+        <TouchableOpacity
+          style={{
+            width: "100%",
+            flexDirection: "row",
+            alignContent: "flex-start",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <View style={{ width: 40, height: 40, backgroundColor: "#c1c1c1", alignItems: "center", justifyContent: "center", borderRadius: 5 }}>
+            <Image source={url} style={{ width: 25, height: 25 }} />
+          </View>
+          <View style={{ flexDirection: "column", paddingLeft: 10 }}>
+            <Text style={styles.localTittle}>{formattedName![0]}</Text>
+            <Text style={styles.localArtistName}>{artist}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+} 
 const styles = StyleSheet.create({
     styleFoto: {
         width: 97,
@@ -106,5 +134,15 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: "#A19E9E",
         textAlign:"center"
+    },
+    localTittle: {
+        fontSize: 14,
+        textAlign: "left",
+        color: "#fff"
+    },
+    localArtistName: {
+        fontSize: 12,
+        textAlign: "left",
+        color: "#c1c1c1"
     }
 })
