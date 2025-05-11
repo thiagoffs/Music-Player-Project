@@ -3,22 +3,21 @@ import { Link } from "expo-router";
 import type { LinkProps } from "expo-router";
 import { usePathname } from "expo-router";
 
-
-const NavenuItem = ({ icon, text,route }: { icon: any; text: string; route: LinkProps["href"]}) => {
+const NavMenuItem = ({ icon, text,route }: { icon: any; text: string; route: LinkProps["href"]}) => {
 
   const pathname = usePathname();
   const cleanPath = (path: string) => path.replace("/(tabs)", "");
   const isActive = cleanPath(pathname) === cleanPath(typeof route === "string" ? route : "");
     return (
-    <Link href={route} asChild>
+    <Link href={route} asChild style={{ flex: 1 }}>
     <TouchableOpacity style={styles.button}>
-      <Image source={typeof icon === "string" ? { uri: icon } : icon} style={[styles.image, isActive && styles.activeImage]} />
-      <Text style={styles.text}>{text}</Text>
+      <Image source={typeof icon === "string" ? { uri: icon } : icon} style={[styles.image, isActive && styles.activeImage] } />
+      <Text style={isActive ? styles.text : {display: "none"}}>{text}</Text>
     </TouchableOpacity>
     </Link>
   );
 };
-export default NavenuItem;
+export default NavMenuItem;
 
 const styles = StyleSheet.create({
   button: {
@@ -26,22 +25,21 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-  },  
-  activeButton:{
-
   },
   text: {
     color: "#FFF",
+    fontSize: 12,
     textAlign: "center",
+    display: "flex",
   },
   image: {
-    width: 24,
-    height: 24,
+    width: 15,
+    height: 15,
     marginBottom: 5,
-    opacity:0.6,
+    opacity: 0.6,
   },
-  activeImage:{
+  activeImage: {
     transform: [{ scale: 1.3 }],
-    opacity:1,
+    opacity: 1,
   }
 });

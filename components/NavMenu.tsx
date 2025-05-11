@@ -1,30 +1,30 @@
 import { View, StyleSheet } from "react-native";
-import NavenuItem from "./NavMenuItem";
+import NavMenuItem from "./NavMenuItem";
 
 export default function NavMenu() {
   return (
     <View style={styles.container}>
-      <NavenuItem
+      <NavMenuItem
         icon={require("@/assets/icons/home.png")}
         text={"Início"}
         route="/(tabs)/home"
         />
-      <NavenuItem
+      <NavMenuItem
         icon={require("@/assets/icons/music.png")}
         text={"Músicas"}
         route="/"
       />
-      <NavenuItem
+      <NavMenuItem
         icon={require("@/assets/icons/album.png")}
         text={"Álbuns"}
-        route="/(tabs)/albuns"
+        route="/(tabs)/albums"
         />
-      <NavenuItem
+      <NavMenuItem
         icon={require("@/assets/icons/artist.png")}
         text={"Artistas"}
         route="/(tabs)/artists"
         />
-      <NavenuItem
+      <NavMenuItem
         icon={require("@/assets/icons/playlist.png")}
         text={"Playlists"}
         route="/(tabs)/playlists"
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     backgroundColor: "#3A3535",
-    padding: 20,
+    padding: 15,
     justifyContent: "space-around",
   },
 });
