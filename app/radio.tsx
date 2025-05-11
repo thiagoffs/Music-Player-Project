@@ -73,7 +73,7 @@ export default function Radio() {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <Animated.Image
-          source={require("../../assets/images/ion_radio.png")}
+          source={require("../assets/images/ion_radio.png")}
           style={
             isPlaying ? [styles.radioImage, animatedStyle] : styles.radioImage
           }
@@ -93,8 +93,8 @@ export default function Radio() {
             <Image
               source={
                 isPlaying
-                  ? require("../../assets/icons/pause.png")
-                  : require("../../assets/icons/play.png")
+                  ? require("../assets/icons/pause.png")
+                  : require("../assets/icons/play.png")
               }
               style={
                 isLoading
@@ -112,6 +112,7 @@ export default function Radio() {
             maximumTrackTintColor="#FFF"
             value={volume.current}
             step={0.01}
+          
             onValueChange={(value) => {
               volume.current = value;
               if (sound) {
@@ -142,8 +143,8 @@ const styles = StyleSheet.create({
     margin: "auto"
   },
   slider: {
-    width: 242,
-    // transform: [{scale: 1.2}],
+    width: 250,
+    height: 40,
   },
   playButton: {
     position: "relative",
