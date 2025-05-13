@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import Music from "@/components/Music";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -74,12 +75,13 @@ export default function PageList() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Header />
             <View style={styles.content}>
                 <View style={styles.containerTitlePage}>
                     <TouchableOpacity onPress={() => router.push("../home")}>
                         <AntDesign name="arrowleft" size={29} color="white" />
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 30, color: "#fff", paddingHorizontal:20 }}>{title}</Text>
+                    <Text style={{ fontSize: 20, color: "#fff", paddingHorizontal: 20}}>{title}</Text>
                 </View>
 
                 <FlatList
@@ -89,8 +91,8 @@ export default function PageList() {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={styles.containerViewFlatList}>
-                            <Text style={{ color: "white", margin: 10,textAlign:"center" }}>{item.title}</Text>
-                            <Music url={{ uri: item.image }} mode="grid" />
+                            <Text style={{ color: "white", margin: 10, textAlign: "center" }}>{item.title}</Text>
+                            <Music url={{ uri: item.image }} mode="grid" key={""} path={""} />
                         </View>
                     )}
                 />
@@ -101,8 +103,12 @@ export default function PageList() {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: "#2F2A2A",
         flex: 1,
-        backgroundColor: "#2A2727",
+        alignItems: "center",
+        paddingTop: 20,
+        minWidth:200
+
     },
     content: {
         flex: 1,
@@ -111,18 +117,19 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         padding: 20,
         alignItems: "center",
-       
+        minWidth:"100%",
+
     },
     flatList: {
-       // borderWidth: 1,
-       // borderColor: "red",
+        // borderWidth: 1,
+        // borderColor: "red",
     },
     containerViewFlatList: {
         //borderWidth: 1,
-        maxWidth:"50%",
+        maxWidth: "50%",
         flex: 1,
         justifyContent: 'center',
-        alignItems:"center",
+        alignItems: "center",
         borderColor: "white",
     }
 });
