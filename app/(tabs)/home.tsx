@@ -4,21 +4,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Music from '../../components/Music'
 import { useRouter } from 'expo-router';
+import Header from '@/components/Header';
 
 //Tela home
 export default function Home() {
     const router = useRouter();
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <FontAwesome5 name="search" size={29} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.recentsTitleText}>Nome do App</Text>
-                <TouchableOpacity>
-                    <Ionicons name="settings-sharp" size={29} color="white" />
-                </TouchableOpacity>
-            </View>
+            <Header/>
             <ScrollView
                 contentContainerStyle={{ paddingBottom: "10%" }}
                 style={styles.scroll}>

@@ -1,14 +1,13 @@
 import Header from "@/components/Header";
 import { View, StyleSheet, Text, SafeAreaView } from "react-native";
 
-//Tela Artistas
-export default function Artists() {
+//Tela Album
+export default function Config() {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-
       <View style={styles.content}>
-        <Text style={{ fontSize: 30, color: "#fff", textAlign: "center" }}>Tela Artistas</Text>
+        <Text style={{ fontSize: 30, color: "#fff", textAlign: "center" }}>Tela de configurações</Text>
       </View>
     </SafeAreaView>
   );
@@ -24,4 +23,5 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
+
 });

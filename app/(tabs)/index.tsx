@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet,Text, SafeAreaView, FlatList, TouchableOpacity } from "react-native";
+import { View, StyleSheet,Text, SafeAreaView, FlatList } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import type { PagedInfo, Asset } from "expo-media-library";
 import Music from "@/components/Music";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Header from "@/components/Header";
 
 //Primeira tela do App
 export default function Index() {
@@ -33,15 +32,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-                <TouchableOpacity>
-                    <FontAwesome5 name="search" size={29} color="white" />
-                </TouchableOpacity>
-                <Text style={styles.recentsTitleText}>Nome do App</Text>
-                <TouchableOpacity>
-                    <Ionicons name="settings-sharp" size={29} color="white" />
-                </TouchableOpacity>
-        </View>
+     <Header/>
 
       <View>        
         <FlatList
@@ -65,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#2A2727",
+    backgroundColor: "#2F2A2A",
     paddingTop: "5%",    
     paddingBottom: "30%",
   },
