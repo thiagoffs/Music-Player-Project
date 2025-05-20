@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { View, StyleSheet,Text, SafeAreaView, FlatList } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import { usePlayer } from "@/Context/playerContext";
 import * as MediaLibrary from "expo-media-library";
 import type { PagedInfo, Asset } from "expo-media-library";
 import Music from "@/components/Music";
@@ -9,6 +10,7 @@ import Header from "@/components/Header";
 export default function Index() {
   const [musics, setMusics] = useState<PagedInfo<Asset>>();
   const [responsePermissions, requestPermissions] = MediaLibrary.usePermissions();
+  const { playTrack } = usePlayer();
 
   const getPermissions = async () => {
     if(responsePermissions?.status !== "granted"){
@@ -28,22 +30,23 @@ export default function Index() {
 
   useEffect(() => {
     getMusics();
-  });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
      <Header/>
-
-      <View>        
+      <View style={{ width: "100%", height: "100%"}}>        
         <FlatList
           data = { musics?.assets }
-          renderItem ={ (infoItem) => <Music  
+          renderItem ={ (infoItem) => 
+          <Music  
               mode = "local"           
               url={ require("../../assets/icons/default-song.png") } 
               name = {infoItem.item.filename} 
               key = { infoItem.item.id }
               path = { infoItem.item.uri }
-              artist = "Desconhecido(a)"              
+              artist = "Desconhecido(a)"   
+              onPress = {() => playTrack(infoItem.item, musics?.assets as Asset[])}           
             />          
           }
         />        
@@ -58,15 +61,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#2F2A2A",
     paddingTop: "5%",    
-    paddingBottom: "30%",
-  },
-  header: {
-    width: "90%",
-    marginTop: 15,
-    padding: 2,
-    marginBottom: "10%",
-    justifyContent: "space-between",
-    flexDirection: "row",
   },
   recentsTitleText: {
     color: "#fff",

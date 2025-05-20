@@ -1,15 +1,26 @@
 import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from "react-native";
-import React from "react";
+import { usePlayer } from "@/Context/playerContext";
+import * as MediaLibrary from "expo-media-library";
 
 type Props = {
-    key: string;
+    key?: string;
     name?: string;
     artist?: string;
     url: ImageSourcePropType;
     mode?: "horizontal" | "vertical" | "grid" | "local";
-    path: string;
+    path?: string;
+    onPress?: () => void;
 };
-export default function Music({ name, url, artist, mode = "horizontal" }: Props) {
+
+type Track = {
+  uri: string;
+  fileName?: string;
+  artist?: string;
+  image?: string;
+  name: string;
+};
+
+export default function Music({ name, url, artist, mode = "horizontal", path, onPress }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
@@ -17,7 +28,7 @@ export default function Music({ name, url, artist, mode = "horizontal" }: Props)
     } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} />
     } else {
-        return <LocalMusicIcon name={name} artist={artist} url={url} />
+        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} onPress={onPress} />
     }
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -54,19 +65,33 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
 
     );
 }
-function LocalMusicIcon({ name, url, artist }: { name?: string; url: ImageSourcePropType; artist?: string }) {
+function LocalMusicIcon({ name, url, artist, path }: Props) {
     const formattedName = name?.split(".");
+    const { playTrack } = usePlayer();
     return (
-      <View
-        style={{ width: "100%", marginVertical: 10, paddingHorizontal: 10 }}
-      >
         <TouchableOpacity
+        onPress={async () => {
+            const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+            playTrack(
+              { uri: path ?? "", name: formattedName![0], artist },
+              assets.assets.map((asset) => ({
+                uri: asset.uri,
+                name: asset.filename? asset.filename.split(".")[0] : "Unknown",
+                url: asset.albumId
+                  ? `album-${asset.albumId}`
+                  : require("../assets/icons/default-song.png"),
+                image: require("../assets/icons/default-song.png"),
+              })) as Track[]
+            );
+        }}
           style={{
             width: "100%",
             flexDirection: "row",
             alignContent: "flex-start",
             alignItems: "center",
             justifyContent: "flex-start",
+            marginVertical: 10,
+            paddingHorizontal: 10,
           }}
         >
           <View style={{ width: 40, height: 40, backgroundColor: "#c1c1c1", alignItems: "center", justifyContent: "center", borderRadius: 5 }}>
@@ -77,7 +102,6 @@ function LocalMusicIcon({ name, url, artist }: { name?: string; url: ImageSource
             <Text style={styles.localArtistName}>{artist}</Text>
           </View>
         </TouchableOpacity>
-      </View>
     );
 } 
 const styles = StyleSheet.create({
