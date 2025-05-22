@@ -10,6 +10,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Radio() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -64,7 +65,7 @@ export default function Radio() {
     try {
       await sound?.stopAsync();
       setIsPlaying(false);
-      // await sound?.unloadAsync();
+      await sound?.unloadAsync();
     } catch (error) {
       console.error("Erro ao parar áudio:", error);
     }
@@ -90,29 +91,22 @@ export default function Radio() {
               hidesWhenStopped={true}
               style={styles.activityIndicator}
             />
-            <Image
-              source={
-                isPlaying
-                  ? require("../assets/icons/pause.png")
-                  : require("../assets/icons/play.png")
-              }
-              style={
-                isLoading
-                  ? styles.playButtonImageAllWhite
-                  : styles.playButtonImage
-              }
+            <Ionicons
+              name={isPlaying ? "pause-circle" : "play-circle"}
+              size={80}
+              color={"#FFF"}
+              style={isLoading ? styles.playButtonImageAllWhite : styles.playButtonImage}
             />
           </TouchableOpacity>
           <Slider
             style={styles.slider}
             minimumValue={0}
             maximumValue={1}
-            thumbTintColor="#435A88"
-            minimumTrackTintColor="#435A88"
+            thumbTintColor="#FFF"
+            minimumTrackTintColor="#FFF"
             maximumTrackTintColor="#FFF"
             value={volume.current}
             step={0.01}
-          
             onValueChange={(value) => {
               volume.current = value;
               if (sound) {
@@ -145,6 +139,7 @@ const styles = StyleSheet.create({
   slider: {
     width: 250,
     height: 40,
+    transform: [{ scaleY: 1.3 }, { scaleX: 1.1 }],
   },
   playButton: {
     position: "relative",
