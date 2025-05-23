@@ -32,10 +32,7 @@ const handleVolumeChange = (value: number) => {
     return (
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image
-            source={defaultSongIcon}
-            style={styles.image}
-          />
+          <Image source={defaultSongIcon} style={styles.image} />
         </View>
         <View
           style={[
@@ -64,13 +61,30 @@ const handleVolumeChange = (value: number) => {
               { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
             ]}
           >
-            { currentTrack?.name ?? "Desconhecida" }
+            {currentTrack?.name ?? "Desconhecida"}
           </Text>
           <Text style={[styles.text, { fontSize: 16 }]}>
-            { currentTrack?.artist ?? "Desconhecido" }
+            {currentTrack?.artist ?? "Desconhecido"}
           </Text>
         </View>
-
+        <View style={styles.addToandFavoriteView}>
+          <TouchableOpacity>
+            <Ionicons
+              name="list-outline"
+              size={24}
+              color="#FFF"
+              style={{ marginTop: 20, marginBottom: 20 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons
+              name="heart-outline"
+              size={24}
+              color="#FFF"
+              style={{ marginTop: 20, marginBottom: 20 }}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.controlsContainer}>
           <TouchableOpacity>
             <Ionicons name="repeat" size={24} color="#FFF" />
@@ -157,7 +171,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 40,
     marginBottom: 40,
-    marginTop: 40,
   },
   controls: {
     flexDirection: "row",
@@ -173,4 +186,10 @@ const styles = StyleSheet.create({
     marginTop: 51,
     marginBottom: 34,
   },
+  addToandFavoriteView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 40,
+  }
 });
