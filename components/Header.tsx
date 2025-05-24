@@ -5,7 +5,7 @@ const Header = () => {
     const router = useRouter();
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.push('/explore')}>
+            <TouchableOpacity onPress={() => router.push('/searchMusicLocal')}>
                 <Image source={require("../assets/icons/search_header.png")} />
             </TouchableOpacity>
             <Logo/>

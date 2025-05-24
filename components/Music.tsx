@@ -97,7 +97,7 @@ function LocalMusicIcon({ name, url, artist, path }: Props) {
           <View style={{ width: 40, height: 40, backgroundColor: "#c1c1c1", alignItems: "center", justifyContent: "center", borderRadius: 5 }}>
             <Image source={url} style={{ width: 25, height: 25 }} />
           </View>
-          <View style={{ flexDirection: "column", paddingLeft: 10 }}>
+          <View style={{ flexDirection: "column", paddingLeft: 10,flex:1 }}>
             <Text style={styles.localTittle}>{formattedName![0]}</Text>
             <Text style={styles.localArtistName}>{artist}</Text>
           </View>

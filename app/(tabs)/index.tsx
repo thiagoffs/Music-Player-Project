@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { usePlayer } from "@/Context/playerContext";
+import { useMusics } from "@/Context/musicContext";
 import * as MediaLibrary from "expo-media-library";
-import type { PagedInfo, Asset } from "expo-media-library";
+import type { Asset } from "expo-media-library";
 import Music from "@/components/Music";
 import Header from "@/components/Header";
 
 //Primeira tela do App
 export default function Index() {
-  const [musics, setMusics] = useState<PagedInfo<Asset>>();
+  const { musics, setMusics } = useMusics();
   const [responsePermissions, requestPermissions] = MediaLibrary.usePermissions();
   const { playTrack } = usePlayer();
 
