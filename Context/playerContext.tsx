@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useRef } from "react";
 import { Audio } from "expo-av";
 import { Sound } from "expo-av/build/Audio";
+import { useDatabase } from "@/database/useDatabase";
 
 type Track = {
   uri: string;
   name?: string;
   artist?: string;
   image?: string;
+  id?: string;
 };
 
 type PlayerContextType = {
@@ -37,6 +39,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const soundRef = useRef<Sound | null>(null);
 
   const playTrack = async (track: Track, newPlaylist?: Track[]) => {
+    const database = await useDatabase();
+
     try {
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
@@ -56,6 +60,19 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentTrack(track);
       setIsPlaying(true);
 
+      if(track.id) {        
+          const existsDataOnRecentPlays = await database.existsDataOnRecentPlays(track.id);
+          if(existsDataOnRecentPlays === true) {
+            await database.incrementQuantityPlays(track.id);
+            console.log("A quantidade de plays foi incrementada");
+          } else {
+            await database.insertInRecentPlaysTable(track.id);
+            console.log("A música foi adicionada como registro na tabela recent_plays");
+          }
+      } else {
+        console.log("Erro no registro, pois o id é indefinido | null.");
+      }
+      
       if (newPlaylist) {
         const index = newPlaylist.findIndex((t) => t.uri === track.uri);
         if (index !== -1) {
