@@ -12,6 +12,13 @@ export type MusicInfo = {
 export async function useDatabase() {
     const database = await SQLite.openDatabaseAsync("beatfy.db");
 
+    async function queryRecentPlaysMusics() {
+        const queryWithJoin = "SELECT all_musics.id, all_musics.name, all_musics.artist, all_musics.url, all_musics.path," 
+            + "all_musics.duration FROM recent_plays LEFT JOIN all_musics ON recent_plays.id_music = all_musics.id ORDER BY recent_plays.quantity_plays DESC";
+        const response = await database.getAllAsync<MusicInfo>(queryWithJoin);
+        return response
+    }
+
     async function existsDataOnAllMusicTable() {
         try {
             const response = await database.getAllAsync(`SELECT * FROM all_musics`);
@@ -34,7 +41,7 @@ export async function useDatabase() {
 
     async function insertInAllMusicsTable(musicInfo : MusicInfo) { 
         const statement = await database.prepareAsync(
-            "INSERTO INTO all_musics(id, name, artist, url, path, duration) VALUES ($id, $name, $artist, $url, $path, $duration)"
+            "INSERT INTO all_musics(id, name, artist, url, path, duration) VALUES ($id, $name, $artist, $url, $path, $duration)"
         );
 
         try {
@@ -55,7 +62,7 @@ export async function useDatabase() {
 
     async function insertInRecentPlaysTable(id_music : string) {
         const statement = await database.prepareAsync(
-            "INSERTO INTO recent_plays(id_music, quantity_plays) VALUES ($id_music, 1)"
+            "INSERT INTO recent_plays(id_music, quantity_plays) VALUES ($id_music, 1)"
         );
 
         try {
@@ -71,9 +78,9 @@ export async function useDatabase() {
 
     async function incrementQuantityPlays(id_music : string) {
         try {
-            const quantityPlays = await database.getFirstAsync<number>(`SELECT quantity_plays FROM recent_plays WHERE id_music = ${id_music}`);
+            const quantityPlays = await database.getFirstAsync<{ quantity_plays : number }>(`SELECT quantity_plays FROM recent_plays WHERE id_music = ${id_music}`);
             if(quantityPlays) {
-                const increment = quantityPlays + 1;
+                const increment : number = quantityPlays.quantity_plays + 1;                
                 await database.runAsync(`UPDATE recent_plays SET quantity_plays = ${increment} WHERE id_music = ${id_music}`);
             } 
         } catch(error) {
@@ -81,5 +88,6 @@ export async function useDatabase() {
         }        
     }
 
-    return { existsDataOnAllMusicTable, existsDataOnRecentPlays, insertInAllMusicsTable, insertInRecentPlaysTable, incrementQuantityPlays };
+    return { queryRecentPlaysMusics ,existsDataOnAllMusicTable, 
+        existsDataOnRecentPlays, insertInAllMusicsTable, insertInRecentPlaysTable, incrementQuantityPlays };
 }

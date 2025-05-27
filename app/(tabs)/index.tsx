@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import { View, StyleSheet, SafeAreaView, FlatList, Button } from "react-native";
 import { usePlayer } from "@/Context/playerContext";
 import { useMusics } from "@/Context/musicContext";
 import * as MediaLibrary from "expo-media-library";
@@ -70,7 +70,7 @@ export default function Index() {
               mode = "local"           
               url={ require("../../assets/icons/default-song.png") } 
               name = {infoItem.item.filename} 
-              key = { infoItem.item.id }
+              id = {infoItem.item.id}
               path = { infoItem.item.uri }
               artist = "Desconhecido(a)"   
               onPress = {() => playTrack(infoItem.item, musics?.assets as Asset[])}           
