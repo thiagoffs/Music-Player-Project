@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useRef } from "react";
 import { Audio } from "expo-av";
 import { Sound } from "expo-av/build/Audio";
+import { useDatabase } from "@/database/useDatabase";
 
 type Track = {
+  id : string,
   uri: string;
   name?: string;
   artist?: string;
-  image?: string;
+  image?: string;  
 };
 
 type PlayerContextType = {
@@ -37,6 +39,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const soundRef = useRef<Sound | null>(null);
 
   const playTrack = async (track: Track, newPlaylist?: Track[]) => {
+    const database = await useDatabase();
+
     try {
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
@@ -55,7 +59,16 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       soundRef.current = sound;
       setCurrentTrack(track);
       setIsPlaying(true);
-
+      
+      if(currentTrack?.id) {        
+          const existsDataOnRecentPlays = await database.existsDataOnRecentPlays(currentTrack?.id);          
+          if(existsDataOnRecentPlays === true) {
+            await database.incrementQuantityPlays(currentTrack?.id);            
+          } else {
+            await database.insertInRecentPlaysTable(currentTrack?.id);            
+          }
+      } 
+      
       if (newPlaylist) {
         const index = newPlaylist.findIndex((t) => t.uri === track.uri);
         if (index !== -1) {
