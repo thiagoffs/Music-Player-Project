@@ -12,6 +12,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="radio" />
           <Stack.Screen name="player" />
+          <Stack.Screen name="lyric" />
         </Stack>
         <MiniPlayer />
       </MusicProvider>
