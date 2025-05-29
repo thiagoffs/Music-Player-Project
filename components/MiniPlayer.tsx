@@ -47,8 +47,7 @@ export default function MiniPlayer() {
     }
   }, [textWidth]);
 
-  if (!currentTrack || pathname === "/player") return null;
-
+  if (!currentTrack || pathname === "/player" || pathname === "/lyric") return null;
   return (
     <TouchableOpacity style={styles.container} onPress={() => router.push("/player")}>
       <View
@@ -64,8 +63,8 @@ export default function MiniPlayer() {
         }}
       >
         <Image
-          source={currentTrack.image ?? defaultSongIcon}
-          style={{ width: 25, height: 25 }}
+          source={currentTrack.image ? { uri: currentTrack.image } : defaultSongIcon}
+          style={{ width: currentTrack.image ? "100%" : 25, height: currentTrack.image ? "100%" : 25, borderRadius: 5 }}
         />
       </View>
       <View style={{ flex: 1 }}>
