@@ -81,7 +81,7 @@ export default function Player() {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={{uri: currentTrack?.image ?? defaultSongIcon}} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0}} />
+        <Image source={currentTrack?.image ? {uri: currentTrack.image} : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0}} />
       </View>
       <View
         style={[
