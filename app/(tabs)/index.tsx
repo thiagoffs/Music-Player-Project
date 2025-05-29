@@ -23,8 +23,8 @@ export default function Index() {
   }
 
   const getMusics = async () => {
-    getPermissions();
-    let foundMusics = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+    await getPermissions();
+    const foundMusics = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
     const songs = {
       ...foundMusics,
       assets: foundMusics.assets.filter((music) => music.duration && music.duration > 90),

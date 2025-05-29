@@ -11,6 +11,8 @@ import { useDatabase, type MusicInfo } from '@/database/useDatabase';
 //Tela home
 export default function Home() {
     const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
+    const [favorite, setFavorite] = useState<MusicInfo[] | null>([]);
+
     const router = useRouter();
     const database = useDatabase();
 
@@ -18,13 +20,19 @@ export default function Home() {
         const songs = (await database).queryRecentPlaysMusics();
         setRecentPlays(await songs);
     };
+    const favoriteSongs = async () => {
+        const favorite = (await database).queryFavoriteMusics();
+        setFavorite(await favorite);
+
+    }
 
     useEffect(() => {
         songs();
-    }, [recentPlays]);
+        favoriteSongs();
+    }, [recentPlays, favorite]);
     return (
         <SafeAreaView style={styles.container}>
-            <Header/>
+            <Header />
             <ScrollView
                 contentContainerStyle={{ paddingBottom: "10%" }}
                 style={styles.scroll}>
@@ -37,27 +45,28 @@ export default function Home() {
                     </View>
                     <View style={styles.recents}>
                         <View style={styles.recentesTitle}>
-                            <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>                            
+                            <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
                             <TouchableOpacity onPress={() => router.push("/list/recent")}>
                                 <AntDesign name="arrowright" size={29} color="white" />
                             </TouchableOpacity>
                         </View>
-                        
-                        <ScrollView horizontal={true} contentContainerStyle ={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-                            { recentPlays?.map((value, index) => {
-                                if(index < 4) {
-                                    return(
-                                        <Music 
-                                            mode="grid" 
-                                            name={value.name} 
+
+                        <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                            {recentPlays?.map((value, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <Music
+                                            key={value.path?? `${value.name} - ${index}`}
+                                            mode="grid"
+                                            name={value.name}
                                             artist={value.artist ?? "Desconhecido(a)"}
-                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }} 
-                                            path={value.path} 
-                                        />                                                                             
+                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }}
+                                            path={value.path}
+                                        />
                                     );
-                                }                                    
-                            })} 
-                        </ScrollView>                                                        
+                                }
+                            })}
+                        </ScrollView>
                     </View>
                     <View style={styles.favorite}>
                         <View style={styles.recentesTitle}>
@@ -66,13 +75,22 @@ export default function Home() {
                                 <AntDesign name="arrowright" size={29} color="white" />
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.favoritesList}>
-                            <Music mode='vertical' name='Mr. Fear' url={{ uri: "https://placecats.com/300/300" }} artist='SIAMÉS' key = "example4" path = "/file/music/example.mp3" />
-                            <Music mode='vertical' name='Borderline' url={{ uri: "https://placecats.com/300/300" }} artist='Tame Impala' key = "example5" path = "/file/music/example.mp3" />
-                            <Music mode='vertical' name='Decida' url={{ uri: "https://placecats.com/300/300" }} artist='Zezo Potiguar' key = "example6" path = "/file/music/example.mp3" />
-
-                        </View>
+                        <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                            {favorite?.map((value, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <Music
+                                            key={value.path?? `${value.name} - ${index}`}
+                                            mode="grid"
+                                            name={value.name}
+                                            artist={value.artist ?? "Desconhecido(a)"}
+                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }}
+                                            path={value.path}
+                                        />
+                                    );
+                                }
+                            })}
+                        </ScrollView>
                     </View>
 
                     <View>
@@ -84,10 +102,10 @@ export default function Home() {
                         </View>
 
                         <View style={styles.albuns}>
-                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} key = "example7" path = "/file/music/example.mp3" />
-                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} key = "example8" path = "/file/music/example.mp3" />
-                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} key = "example9" path = "/file/music/example.mp3" />
-                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} key = "example10" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} key="example7" path="/file/music/example.mp3" />
+                            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} key="example8" path="/file/music/example.mp3" />
+                            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} key="example9" path="/file/music/example.mp3" />
+                            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} key="example10" path="/file/music/example.mp3" />
                         </View>
                     </View>
                     <View>
@@ -99,9 +117,9 @@ export default function Home() {
                         </View>
 
                         <View style={styles.albuns}>
-                            <Music mode='grid' name='Ficar Monstrão' url={{ uri: "https://placecats.com/300/300" }} key = "example11" path = "/file/music/example.mp3" />
-                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key = "example12" path = "/file/music/example.mp3" />
-                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key = "example13" path = "/file/music/example.mp3" />
+                            <Music mode='grid' name='Ficar Monstrão' url={{ uri: "https://placecats.com/300/300" }} key="example11" path="/file/music/example.mp3" />
+                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key="example12" path="/file/music/example.mp3" />
+                            <Music mode='grid' name='As Melhores Clássicas' url={{ uri: "https://placecats.com/300/300" }} key="example13" path="/file/music/example.mp3" />
 
                         </View>
                     </View>
@@ -158,7 +176,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 10,
     },
-    listMusicCarrosel: {          
+    listMusicCarrosel: {
         height: 230,
         paddingBottom: 20,
         alignItems: "baseline",
