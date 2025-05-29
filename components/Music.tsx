@@ -3,7 +3,7 @@ import { usePlayer } from "@/Context/playerContext";
 import * as MediaLibrary from "expo-media-library";
 
 type Props = {
-    key?: string;
+    id?: string;
     name?: string;
     artist?: string;
     url: ImageSourcePropType;
@@ -13,6 +13,7 @@ type Props = {
 };
 
 type Track = {
+  id: string,
   uri: string;
   fileName?: string;
   artist?: string;
@@ -20,7 +21,7 @@ type Track = {
   name: string;
 };
 
-export default function Music({ name, url, artist, mode = "horizontal", path, onPress }: Props) {
+export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
@@ -28,7 +29,7 @@ export default function Music({ name, url, artist, mode = "horizontal", path, on
     } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} />
     } else {
-        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} onPress={onPress} />
+        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} />
     }
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -58,14 +59,14 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
         <TouchableOpacity style={styles.songGrid}>
             <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
             <Image source={url} style={styles.styleFotoGrid} />
-                <Text style={styles.songTitleGrid}>{name}</Text>
-                <Text style={styles.songSubTitleGrid}>{artist}</Text>
+                <Text style={styles.songTitleGrid} numberOfLines={3}>{name}</Text>
+                <Text style={styles.songSubTitleGrid} numberOfLines={1}>{artist}</Text>
             </View>
         </TouchableOpacity>
 
     );
 }
-function LocalMusicIcon({ name, url, artist, path }: Props) {
+function LocalMusicIcon({ name, url, artist, path, id }: Props) {
     const formattedName = name?.split(".");
     const { playTrack } = usePlayer();
     return (
@@ -73,8 +74,9 @@ function LocalMusicIcon({ name, url, artist, path }: Props) {
         onPress={async () => {
             const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
             playTrack(
-              { uri: path ?? "", name: formattedName![0], artist },
+              { id: id ?? "", uri: path ?? "", name: formattedName![0], artist },
               assets.assets.map((asset) => ({
+                id: asset.id,
                 uri: asset.uri,
                 name: asset.filename? asset.filename.split(".")[0] : "Unknown",
                 url: asset.albumId

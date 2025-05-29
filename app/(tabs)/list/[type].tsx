@@ -2,49 +2,23 @@ import Header from "@/components/Header";
 import Music from "@/components/Music";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { View, StyleSheet, Text, SafeAreaView, TouchableOpacity, FlatList } from "react-native";
-
-const foto = "https://placecats.com/300/300";
+import { View, StyleSheet, Text, SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import { useEffect, useState } from "react";
+import { useDatabase } from "@/database/useDatabase";
 
 const mockData = {
-    recent: [
-        { id: "1", title: "My Way", image: foto },
-        { id: "2", title: "Breathe", image: foto },
-        { id: "3", title: "Sad But True", image: foto },
-        { id: "11", title: "Californication", image: foto },
-        { id: "12", title: "High Hopes", image: foto },
-        { id: "13", title: "No Surprises", image: foto },
-        { id: "14", title: "Everlong", image: foto },
-        { id: "15", title: "Dream On", image: foto },
-        { id: "16", title: "Runaway", image: foto },
-        { id: "17", title: "Come As You Are", image: foto },
-        { id: "18", title: "Bittersweet Symphony", image: foto },
-        { id: "19", title: "Mr. Brightside", image: foto },
-        { id: "20", title: "Fix You", image: foto },
-        { id: "21", title: "Boulevard of Broken Dreams", image: foto },
-        { id: "22", title: "Chasing Cars", image: foto },
-        { id: "23", title: "Black Hole Sun", image: foto },
-        { id: "24", title: "In the End", image: foto },
-        { id: "25", title: "Under the Bridge", image: foto }
-
-    ],
-    favorites: [
-        { id: "4", title: "Mr. Fear", image: foto },
-        { id: "5", title: "Borderline", image: foto },
-        { id: "6", title: "Decida", image: foto },
-    ],
     albums: [
-        { id: "7", title: "Plastic Beach", image: foto },
-        { id: "8", title: "True Defiance", image: foto },
-        { id: "9", title: "20 Super Sucessos", image: foto },
+        { id: "7", title: "Plastic Beach", image: "https://placecats.com/300/300" },
+        { id: "8", title: "True Defiance", image: "https://placecats.com/300/300" },
+        { id: "9", title: "20 Super Sucessos", image: "https://placecats.com/300/300" },
     ],
     playlists: [
-        { id: "10", title: "Ficar Monstrão", image: foto },
-        { id: "11", title: "As Melhores Clássicas", image: foto },
+        { id: "10", title: "Ficar Monstrão", image: "https://placecats.com/300/300" },
+        { id: "11", title: "As Melhores Clássicas", image: "https://placecats.com/300/300" },
     ],
 };
 
-const titlesPages: Record<keyof typeof mockData, string> = {
+const titlesPages = {
     recent: "Tocadas recentemente",
     favorites: "Favoritas",
     albums: "Álbuns",
@@ -55,9 +29,12 @@ const validTypes = ["recent", "favorites", "albums", "playlists"] as const;
 type TypeKey = typeof validTypes[number];
 
 export default function PageList() {
-    const params = useLocalSearchParams();
+    const { type } = useLocalSearchParams();
     const router = useRouter();
-    const type = params.type;
+    const db = useDatabase();
+
+    const [items, setItems] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     if (typeof type !== "string" || !validTypes.includes(type as TypeKey)) {
         return (
@@ -70,8 +47,54 @@ export default function PageList() {
     }
 
     const typedType = type as TypeKey;
-    const items = mockData[typedType];
     const title = titlesPages[typedType];
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const database = await db;
+                let data: any[] = [];
+
+                if (typedType === "favorites") {
+                    const res = await database.queryFavoriteMusics();
+                   // console.log("Favoritas:", res);
+
+                    data = res.map((r: any, index: number) => ({
+                        id: String(r.id ?? `${r.name}-${index}`),
+                        name: r.name ?? "Sem nome",
+                        artist: r.artist ?? "Desconhecido(a)",
+                        url: r.url ?? "https://placecats.com/300/300",
+                        path: r.path ?? "",
+                    }));
+                } else if (typedType === "recent") {
+                    const res = await database.queryRecentPlaysMusics();
+                //    console.log("Recentes:", res);
+
+                    data = res.map((r: any, index: number) => ({
+                        id: String(r.id ?? `${r.name}-${index}`),
+                        name: r.name ?? "Sem nome",
+                        artist: r.artist ?? "Desconhecido(a)",
+                        url: r.url ?? "https://placecats.com/300/300",
+                        path: r.path ?? "",
+                    }));
+
+
+                } else {
+                    data = mockData[typedType];
+                }
+
+                setItems(data);
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [typedType]);
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -81,21 +104,33 @@ export default function PageList() {
                     <TouchableOpacity onPress={() => router.push("../home")}>
                         <AntDesign name="arrowleft" size={29} color="white" />
                     </TouchableOpacity>
-                    <Text style={{ fontSize: 20, color: "#fff", paddingHorizontal: 20}}>{title}</Text>
+                    <Text style={styles.title}>{title}</Text>
                 </View>
 
-                <FlatList
-                    style={styles.flatList}
-                    data={items}
-                    numColumns={2}
-                    keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => (
-                        <View style={styles.containerViewFlatList}>
-                            <Text style={{ color: "white", margin: 10, textAlign: "center" }}>{item.title}</Text>
-                            <Music url={{ uri: item.image }} mode="grid" key={""} path={""} />
-                        </View>
-                    )}
-                />
+                {loading ? (
+                    <ActivityIndicator size="large" color="#fff" style={{ marginTop: 40 }} />
+                ) : (
+                    <FlatList
+                        data={items}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        renderItem={({ item, index }) => (
+                            <View
+                                style={styles.containerViewFlatList}
+                            >
+                                <Text style={styles.musicTitle}>{item.title}</Text>
+                                <Music
+                                    key={item.path ?? `${item.name}-${index}`}
+                                    mode="grid"
+                                    name={item.name}
+                                    artist={item.artist}
+                                    url={{ uri: item.url }}
+                                    path={item.path}
+                                />
+                            </View>
+                        )}
+                    />
+                )}
             </View>
         </SafeAreaView>
     );
@@ -107,29 +142,31 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         paddingTop: 20,
-        minWidth:200
-
     },
     content: {
         flex: 1,
+        width: "100%",
     },
     containerTitlePage: {
         flexDirection: "row",
         padding: 20,
         alignItems: "center",
-        minWidth:"100%",
-
     },
-    flatList: {
-        // borderWidth: 1,
-        // borderColor: "red",
+    title: {
+        fontSize: 20,
+        color: "#fff",
+        paddingHorizontal: 20,
     },
     containerViewFlatList: {
-        //borderWidth: 1,
         maxWidth: "50%",
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: "center",
         alignItems: "center",
-        borderColor: "white",
-    }
+        padding: 10,
+    },
+    musicTitle: {
+        color: "white",
+        marginBottom: 10,
+        textAlign: "center",
+    },
 });
