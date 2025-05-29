@@ -17,5 +17,10 @@ export async function initializeDatabase() {
             quantity_plays INTEGER NOT NULL DEFAULT 1,
             FOREIGN KEY (id_music) REFERENCES all_musics(id)
         );
+          CREATE TABLE IF NOT EXISTS favorite_musics(
+            id_music TEXT PRIMARY KEY NOT NULL,
+            FOREIGN KEY (id_music) REFERENCES all_musics(id)
+        );
+    );
     `);
 }
