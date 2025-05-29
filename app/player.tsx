@@ -8,12 +8,14 @@ import {
 import { usePlayer } from "@/Context/playerContext";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import defaultSongIcon from "@/assets/icons/default-song.png";
 
 export default function Player() {
   const [volume, setVolumeState] = useState(1);
   const { togglePlayPause, togglePreviousSong, toggleNextSong, currentTrack, isPlaying, position, duration, seekTo, setVolume } = usePlayer();
+  const router = useRouter();
 
 const formatMilliseconds = (milliseconds: number) => {
   const minutes = Math.floor(milliseconds / 60000);
@@ -32,7 +34,7 @@ const handleVolumeChange = (value: number) => {
     return (
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={defaultSongIcon} style={styles.image} />
+          <Image source={{uri: currentTrack?.image ?? defaultSongIcon}} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0}} />
         </View>
         <View
           style={[
@@ -125,7 +127,7 @@ const handleVolumeChange = (value: number) => {
           <Ionicons name="volume-high-outline" size={24} color="#FFF" />
         </View>
         <TouchableOpacity
-          onPress={() => console.log("Pressionado")}
+          onPress={() => router.push("/lyric")}
           style={styles.touchableOpacity}
         >
           <Text style={{ color: "#FFF" }}>VER A LETRA</Text>
@@ -152,10 +154,6 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     boxShadow: "0px 4px 4px #171C27",
     marginTop: 40,
-  },
-  image: {
-    width: 150,
-    height: 150,
   },
   sliderContainer: {
     flexDirection: "row",
