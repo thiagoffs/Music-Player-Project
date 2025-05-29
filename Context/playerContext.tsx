@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useRef } from "react";
 import { Audio } from "expo-av";
 import { Sound } from "expo-av/build/Audio";
 
-type Track = {
+export type Track = {
   uri: string;
   name?: string;
   artist?: string;
@@ -41,7 +41,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       if (soundRef.current) {
         await soundRef.current.unloadAsync();
       }
-
       const { sound } = await Audio.Sound.createAsync(
         { uri: track.uri },
         { shouldPlay: true }
@@ -55,7 +54,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       soundRef.current = sound;
       setCurrentTrack(track);
       setIsPlaying(true);
-
       if (newPlaylist) {
         const index = newPlaylist.findIndex((t) => t.uri === track.uri);
         if (index !== -1) {
