@@ -59,12 +59,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       setCurrentTrack(track);
       setIsPlaying(true);
       
-      if(currentTrack?.id) {        
-          const existsDataOnRecentPlays = await database.existsDataOnRecentPlays(currentTrack?.id);          
+      if(track.id) {        
+          const existsDataOnRecentPlays = await database.existsDataOnRecentPlays(track.id);          
           if(existsDataOnRecentPlays === true) {
-            await database.incrementQuantityPlays(currentTrack?.id);            
+            await database.incrementQuantityPlays(track.id);            
           } else {
-            await database.insertInRecentPlaysTable(currentTrack?.id);            
+            await database.insertInRecentPlaysTable(track.id);            
           }
       } 
       
