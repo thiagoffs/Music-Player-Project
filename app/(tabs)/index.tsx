@@ -30,13 +30,14 @@ export default function Index() {
       assets: foundMusics.assets.filter((music) => music.duration && music.duration > 90),
     };
     setMusics(songs);
+    insertAllMusics(songs.assets);
   }
 
-  const insertAllMusics = async () => {
-    const existsDataOnAllMusics = (await database).existsDataOnAllMusicTable();
+  const insertAllMusics = async (songs : MediaLibrary.Asset[] | undefined) => {    
     try {
+      const existsDataOnAllMusics = (await database).existsDataOnAllMusicTable();
       if(await existsDataOnAllMusics === false) {
-        musics?.assets.forEach(async item => {
+        songs?.forEach(async item => {
           const musicInfo : MusicInfo = {
             id: item.id,
             name: item.filename,
@@ -55,7 +56,6 @@ export default function Index() {
   useEffect(() => {
     initializeDatabase();
     getMusics();
-    insertAllMusics();
   }, []);
 
   return (
