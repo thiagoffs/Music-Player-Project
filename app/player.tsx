@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
 import { useRouter } from "expo-router";
@@ -14,15 +13,30 @@ import defaultSongIcon from "@/assets/icons/default-song.png";
 import { useDatabase } from "@/database/useDatabase";
 import { useEffect } from "react";
 
+import {useTogglePlayPause,
+  useTogglePreviousSong,
+  useToggleNextSong,
+  useCurrentTrack,
+  useIsPlaying, usePosition,
+  useDuration,
+  useSeekTo,useSetVolume
+} from "@/store/playerSelectors";
 
 export default function Player() {
   const [volume, setVolumeState] = useState(1);
-  const { togglePlayPause, togglePreviousSong, toggleNextSong, currentTrack, isPlaying, position, duration, seekTo, setVolume } = usePlayer();
   const router = useRouter();
   const database = useDatabase();
   const [isFavorite, setIsFavorite] = useState(false);
 
-
+  const currentTrack = useCurrentTrack();
+  const isPlaying = useIsPlaying();
+  const position = usePosition();
+  const duration = useDuration();
+  const togglePlayPause = useTogglePlayPause();
+  const togglePreviousSong = useTogglePreviousSong();
+  const toggleNextSong = useToggleNextSong();
+  const seekTo = useSeekTo();
+  const setVolume = useSetVolume();
 
   const addFavoriteMusic = async (musicId: string) => {
     const db = await database;
@@ -36,7 +50,6 @@ export default function Player() {
     const checkFavorite = async () => {
       if (currentTrack?.id) {
         const favorite = await (await database).isFavoriteMusic(currentTrack.id);
-        //console.log(currentTrack.id);
         setIsFavorite(favorite);
       }
     };

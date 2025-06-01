@@ -2,8 +2,8 @@ import { View, StyleSheet, Text, SafeAreaView, TextInput, ScrollView, TouchableO
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import GetTrendingSongs from "@/utils/GetTrendings";
+import { usePlaySelectedTrack } from "@/store/playerSelectors";
 import axios from "axios";
-import { usePlaySelectedTrack }from "@/hooks/usePlaySelectedTask";
 
 export default function Explore() {
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -16,7 +16,6 @@ export default function Explore() {
             const response = axios.get(`https://discoveryprovider.audius.co/v1/tracks/search?query=${searchQuery}`,);
             const data = (await response).data.data;
             if (data && Array.isArray(data)) {
-              console.log("Resultados da pesquisa:", data);
               setSearchResults(data);
             }
             else {
@@ -107,10 +106,6 @@ export default function Explore() {
             <Text style={styles.sectionTitle}>Populares este mês</Text>
             <GetTrendingSongs type={"monthly"} />
           </View>
-          {/* <View>
-            <Text style={styles.sectionTitle}>Populares este ano</Text>
-            <GetTrendingSongs type={"yearly"} />
-          </View> */}
           <View>
             <Text style={styles.sectionTitle}>As mais populares</Text>
             <GetTrendingSongs type={"allTime"} />

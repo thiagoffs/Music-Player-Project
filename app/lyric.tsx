@@ -1,20 +1,20 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import { useCurrentTrack } from "@/store/playerSelectors";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 
 const { height: screenHeight } = Dimensions.get("window");
 
 export default function Lyric() {
     const [lyric, setLyric] = useState<string[] | string>("");
-    const { currentTrack } = usePlayer();
+    const currentTrack = useCurrentTrack();
     const router = useRouter();
 
      const translateY = useSharedValue(0);

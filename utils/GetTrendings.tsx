@@ -1,7 +1,7 @@
-import axios from "axios";
+import { usePlaySelectedTrack } from "@/store/playerSelectors";
 import { Image, Text, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useState, useEffect } from "react";
-import { usePlaySelectedTrack } from "@/hooks/usePlaySelectedTask";
+import axios from "axios";
 
 type TrendingSongsProps = {
   type: "trending" | "monthly" | "yearly" | "allTime" | "playlists" | "artists";
@@ -47,7 +47,6 @@ export default function GetTrendingSongs({ type }: TrendingSongsProps) {
     fetchTrending();
   }, [type]);
 
-  // console.log(requestedResource);
   if (loading) {
     return (
       <View style={{ padding: 20, alignItems: "center" }}>

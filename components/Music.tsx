@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
 import * as MediaLibrary from "expo-media-library";
+import { usePlayTrack } from "@/store/playerSelectors";
 
 type Props = {
     id?: string;
@@ -68,7 +68,7 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
 }
 function LocalMusicIcon({ name, url, artist, path, id }: Props) {
     const formattedName = name?.split(".");
-    const { playTrack } = usePlayer();
+    const playTrack = usePlayTrack();
     return (
         <TouchableOpacity
         onPress={async () => {

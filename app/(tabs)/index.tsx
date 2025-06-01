@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList, Button } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
+import { useEffect } from "react";
+import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { useMusics } from "@/Context/musicContext";
 import * as MediaLibrary from "expo-media-library";
 import type { Asset } from "expo-media-library";
@@ -9,12 +8,14 @@ import Header from "@/components/Header";
 import { initializeDatabase } from "@/database/initializeDatabase";
 import { useDatabase, type MusicInfo } from "@/database/useDatabase";
 
-//Primeira tela do App
+import { usePlayTrack } from "@/store/playerSelectors";
+
 export default function Index() {
   const { musics, setMusics } = useMusics();
   const [responsePermissions, requestPermissions] = MediaLibrary.usePermissions();
-  const { playTrack } = usePlayer();
   const database = useDatabase();
+
+  const playTrack = usePlayTrack();
 
   const getPermissions = async () => {
     if(responsePermissions?.status !== "granted"){
@@ -30,13 +31,14 @@ export default function Index() {
       assets: foundMusics.assets.filter((music) => music.duration && music.duration > 90),
     };
     setMusics(songs);
+    insertAllMusics(songs.assets);
   }
 
-  const insertAllMusics = async () => {
-    const existsDataOnAllMusics = (await database).existsDataOnAllMusicTable();
+  const insertAllMusics = async (songs : MediaLibrary.Asset[] | undefined) => {    
     try {
+      const existsDataOnAllMusics = (await database).existsDataOnAllMusicTable();
       if(await existsDataOnAllMusics === false) {
-        musics?.assets.forEach(async item => {
+        songs?.forEach(async item => {
           const musicInfo : MusicInfo = {
             id: item.id,
             name: item.filename,
@@ -55,7 +57,6 @@ export default function Index() {
   useEffect(() => {
     initializeDatabase();
     getMusics();
-    insertAllMusics();
   }, []);
 
   return (
