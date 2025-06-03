@@ -11,24 +11,40 @@ import { useDatabase, type MusicInfo } from '@/database/useDatabase';
 //Tela home
 export default function Home() {
     const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
+    const [suggestion, setSuggestion] = useState<MusicInfo[] | null>([]);
     const [favorite, setFavorite] = useState<MusicInfo[] | null>([]);
 
     const router = useRouter();
     const database = useDatabase();
 
-    const songs = async () => {
-        const songs = (await database).queryRecentPlaysMusics();
-        setRecentPlays(await songs);
+    const suggestionSongs = async () => {
+        try {
+            if(suggestion !== null && suggestion.length > 0) return;
+            const songs = (await database).queryRandomAllMusics();
+            setSuggestion(await songs);
+        } catch(error) {
+            console.log("Erro ao consultar dados aleatórios da tabela all_musics: ", error);
+        }
+    };
+    const recentSongs = async () => {
+        try {
+            const songs = (await database).queryRecentPlaysMusics(); 
+            if((await songs).length === 0) {
+                suggestionSongs();
+            }
+            setRecentPlays(await songs);    
+        } catch(error) {
+            console.log("Erro ao transicionar dados no banco de dados: ", error);
+        }
     };
     const favoriteSongs = async () => {
         const favorite = (await database).queryFavoriteMusics();
         setFavorite(await favorite);
-
-    }
+    };    
 
     useEffect(() => {
-        songs();
-        favoriteSongs();
+        recentSongs();
+        favoriteSongs();        
     }, [recentPlays, favorite]);
     return (
         <SafeAreaView style={styles.container}>
@@ -43,31 +59,55 @@ export default function Home() {
                             <Text style={styles.text}>OUVIR RÁDIO</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.recents}>
-                        <View style={styles.recentesTitle}>
-                            <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
-                            <TouchableOpacity onPress={() => router.push("/list/recent")}>
-                                <AntDesign name="arrowright" size={29} color="white" />
-                            </TouchableOpacity>
-                        </View>
+                    {
+                        recentPlays?.length === 0 ? (
+                            <View style={styles.recents}>
+                                <View style={styles.recentesTitle}>
+                                    <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>                                    
+                                </View>
+                                <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                                        {suggestion?.map((value, index) => {
+                                            return (
+                                                    <Music
+                                                        key={value.path?? `${value.name} - ${index}`}
+                                                        mode="grid"
+                                                        name={value.name}
+                                                        artist={value.artist ?? "Desconhecido(a)"}
+                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
+                                                        path={value.path}
+                                                    />
+                                                );
+                                        })}
+                                </ScrollView>
+                            </View>
+                        ) : ( 
+                                <View style={styles.recents}>
+                                    <View style={styles.recentesTitle}>
+                                        <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
+                                        <TouchableOpacity onPress={() => router.push("/list/recent")}>
+                                            <AntDesign name="arrowright" size={29} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
 
-                        <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-                            {recentPlays?.map((value, index) => {
-                                if (index < 4) {
-                                    return (
-                                        <Music
-                                            key={value.path?? `${value.name} - ${index}`}
-                                            mode="grid"
-                                            name={value.name}
-                                            artist={value.artist ?? "Desconhecido(a)"}
-                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }}
-                                            path={value.path}
-                                        />
-                                    );
-                                }
-                            })}
-                        </ScrollView>
-                    </View>
+                                    <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                                        {recentPlays?.map((value, index) => {
+                                            if (index < 4) {
+                                                return (
+                                                    <Music
+                                                        key={value.path?? `${value.name} - ${index}`}
+                                                        mode="grid"
+                                                        name={value.name}
+                                                        artist={value.artist ?? "Desconhecido(a)"}
+                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
+                                                        path={value.path}
+                                                    />
+                                                );
+                                            }
+                                        })}
+                                    </ScrollView>
+                                </View>
+                            )
+                    }                                            
                     <View style={styles.favorite}>
                         <View style={styles.recentesTitle}>
                             <Text style={styles.recentsTitleText}>Favoritas</Text>
@@ -161,11 +201,12 @@ const styles = StyleSheet.create({
     },
     recents: {
         width: "100%",
+        height: 320,           
     },
     recentesTitle: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 30
+        justifyContent: "space-between",        
+        marginBottom: 30,
     },
     recentsTitleText: {
         color: "#fff",
@@ -198,7 +239,7 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         justifyContent: "space-between",
         width: "100%",
-        paddingHorizontal: 10, // ou 0 pra testar
+        paddingHorizontal: 10,
         marginLeft: 0,
     }
 });
