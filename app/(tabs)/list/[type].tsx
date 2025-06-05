@@ -50,8 +50,7 @@ export default function PageList() {
     const title = titlesPages[typedType];
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
+        const fetchData = async () => {            
             try {
                 const database = await db;
                 let data: any[] = [];
@@ -64,7 +63,7 @@ export default function PageList() {
                         id: String(r.id ?? `${r.name}-${index}`),
                         name: r.name ?? "Sem nome",
                         artist: r.artist ?? "Desconhecido(a)",
-                        url: r.url ?? "https://placecats.com/300/300",
+                        url: r.url ?? require("../../../assets/icons/default-song.png"),
                         path: r.path ?? "",
                     }));
                 } else if (typedType === "recent") {
@@ -75,7 +74,7 @@ export default function PageList() {
                         id: String(r.id ?? `${r.name}-${index}`),
                         name: r.name ?? "Sem nome",
                         artist: r.artist ?? "Desconhecido(a)",
-                        url: r.url ?? "https://placecats.com/300/300",
+                        url: r.url ?? require("../../../assets/icons/default-song.png"),
                         path: r.path ?? "",
                     }));
 
@@ -93,7 +92,7 @@ export default function PageList() {
         };
 
         fetchData();
-    }, [typedType]);
+    }, [items]);
 
 
     return (
@@ -124,7 +123,7 @@ export default function PageList() {
                                     mode="grid"
                                     name={item.name}
                                     artist={item.artist}
-                                    url={{ uri: item.url }}
+                                    url={item.url}
                                     path={item.path}
                                 />
                             </View>

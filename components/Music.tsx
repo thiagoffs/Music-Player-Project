@@ -58,8 +58,10 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
     return (
         <TouchableOpacity style={styles.songGrid}>
             <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
-            <Image source={url} style={styles.styleFotoGrid} />
-                <Text style={styles.songTitleGrid} numberOfLines={3}>{name}</Text>
+                <View style ={styles.fotoGridContainer}>
+                    <Image source={url} style={styles.styleFotoGrid} />
+                </View>
+                <Text style={styles.songTitleGrid} numberOfLines={3}>{name?.split(".")[0]}</Text>
                 <Text style={styles.songSubTitleGrid} numberOfLines={1}>{artist}</Text>
             </View>
         </TouchableOpacity>
@@ -115,13 +117,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginVertical: 10
     },
-    styleFotoGrid: {
+    fotoGridContainer: {
+        alignItems: "center",
+        justifyContent: "center",
         width: "100%",
         height: 122,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "white",
-        resizeMode:"cover"
+        backgroundColor: "#C1C1C1",
+        borderRadius: 35,
+        marginBottom: 10,
+        boxShadow: "0px 4px 4px #171C27",
+    },
+    styleFotoGrid: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "center",    
     },
     songHorizontal: {
         marginVertical: 10
@@ -154,7 +163,7 @@ const styles = StyleSheet.create({
     songTitleGrid: {
         fontSize: 20,
         color: "white",
-        textAlign:"center"
+        textAlign:"center",
     },
     songSubTitleGrid: {
         fontSize: 13,
