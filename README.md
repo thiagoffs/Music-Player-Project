@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+# Beatfy - Player de musica 
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+Beatfy é um aplicativo de música, desenvolvido como projeto acadêmico para a disciplina de Computação para Dispositivos Móveis.  
+Além das funcionalidades convencionais de um player, o app oferece recursos exclusivos como rádio digital, exibição de letras, organização por playlists e equalizador de som.
 
-1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+## Sobre o Beatfy
 
-2. Start the app
+Foi criado para oferecer uma experiência diferenciada na reprodução de músicas, tanto locais quanto online.  
+A proposta do projeto é unir acessibilidade, desempenho e personalização em um só app.
 
-   ```bash
-    npx expo start
-   ```
+Este aplicativo foi desenvolvido por estudantes do curso de Sistemas de Informação do Centro Universitário do Rio São Francisco e orientado pelo Prof. José Anchieta Júnior.
 
-In the output, you'll find options to open the app in a
+## Tecnologias Usadas
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- React Native
+- Expo
+- NPM / NPX
+- Figma
+- Git e GitHub
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Funcionalidades
 
-## Get a fresh project
 
-When you're ready, run:
+- Reproduzir músicas armazenadas localmente
+- Buscar e escutar músicas online via API
+- Ouvir rádio digital em tempo real
+- Ver a letra da música em reprodução
+- Pesquisar músicas pelo nome
+- Organizar músicas por artista, álbum e favoritas
+- Criar playlists
+- Ajuste do volume e equalizador de som
 
-```bash
-npm run reset-project
-```
+## Requisitos
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Funcionais
 
-## Learn more
+- Mapeamento de arquivos de áudio no dispositivo
+- Reprodução de músicas e rádio via internet
+- Pesquisa e listagem de faixas
+- Criação de playlists e favoritos
+- Equalização e controle de áudio
 
-To learn more about developing your project with Expo, look at the following resources:
+### Não Funcionais
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Alto desempenho e resposta rápida
+- Interface leve e intuitiva
+- Segurança de uso
+- Portabilidade entre dispositivos Android e iOS
 
-## Join the community
+## Limitações
 
-Join our community of developers creating universal apps.
+Atualmente, o Beatfy está disponível apenas para dispositivos móveis (Android).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Evolução Planejada
+
+No futuro, o app poderá ter:
+
+- Salas de áudio compartilhadas com outros usuários
+
+
+
+## Contribuição
+
+O projeto foi desenvolvido por:
+
+- José Klesley Pereira Feitosa  
+- Pablo Henrique Dantas de Sá  
+- Pedro Henrique Cavalcante dos Santos  
+- Thiago Ferreira Batista dos Santos  
+
+## Licença
+
+Este projeto possui fins acadêmicos.  
+Pode ser utilizado e adaptado para fins educacionais e demonstrações.
+
