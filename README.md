@@ -1,17 +1,16 @@
-# Beatfy - Aplicativo de Música
+# Beatfy - Player de musica 
 
-<img src="readme/beatfy_logo.png" align="left" width="200" hspace="10" vspace="10">
 
-Beatfy é um aplicativo de música moderno, desenvolvido como projeto acadêmico para a disciplina de Computação para Dispositivos Móveis.  
+Beatfy é um aplicativo de música, desenvolvido como projeto acadêmico para a disciplina de Computação para Dispositivos Móveis.  
 Além das funcionalidades convencionais de um player, o app oferece recursos exclusivos como rádio digital, exibição de letras, organização por playlists e equalizador de som.
 
 
-## Sobre
+## Sobre o Beatfy
 
-Beatfy foi criado para oferecer uma experiência personalizada na reprodução de músicas, tanto locais quanto online.  
+Foi criado para oferecer uma experiência diferenciada na reprodução de músicas, tanto locais quanto online.  
 A proposta do projeto é unir acessibilidade, desempenho e personalização em um só app.
 
-Este aplicativo foi desenvolvido por estudantes do curso de Sistemas de Informação do Centro Universitário do Rio São Francisco e orientado pelo MSc. José Anchieta Júnior.
+Este aplicativo foi desenvolvido por estudantes do curso de Sistemas de Informação do Centro Universitário do Rio São Francisco e orientado pelo Prof. José Anchieta Júnior.
 
 ## Tecnologias Usadas
 
@@ -23,17 +22,15 @@ Este aplicativo foi desenvolvido por estudantes do curso de Sistemas de Informa�
 
 ## Funcionalidades
 
-O app Beatfy permite que você:
 
-- Reproduza músicas armazenadas localmente
-- Busque e escute músicas online via API
-- Ouça rádio digital em tempo real
-- Veja a letra da música em reprodução
-- Pesquise músicas por nome
-- Organize músicas por artista, álbum e favoritas
-- Crie e gerencie playlists
-- Ajuste volume e equalizador de som
-- Escolha entre temas personalizados (modo claro/escuro, etc.)
+- Reproduzir músicas armazenadas localmente
+- Buscar e escutar músicas online via API
+- Ouvir rádio digital em tempo real
+- Ver a letra da música em reprodução
+- Pesquisar músicas pelo nome
+- Organizar músicas por artista, álbum e favoritas
+- Criar playlists
+- Ajuste do volume e equalizador de som
 
 ## Requisitos
 
@@ -54,15 +51,15 @@ O app Beatfy permite que você:
 
 ## Limitações
 
-Atualmente, o Beatfy está disponível apenas para dispositivos móveis (Android/iOS).
+Atualmente, o Beatfy está disponível apenas para dispositivos móveis (Android).
 
 ## Evolução Planejada
 
 No futuro, o app poderá ter:
 
-- Salas de áudio compartilhadas com múltiplos usuários
-- Chats em tempo real
-- Salas públicas e privadas com controle por senha
+- Salas de áudio compartilhadas com outros usuários
+
+
 
 ## Contribuição
 
@@ -72,8 +69,6 @@ O projeto foi desenvolvido por:
 - Pablo Henrique Dantas de Sá  
 - Pedro Henrique Cavalcante dos Santos  
 - Thiago Ferreira Batista dos Santos  
-
-Sinta-se livre para contribuir ou adaptar com fins educacionais.
 
 ## Licença
 
