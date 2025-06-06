@@ -27,12 +27,12 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-        return <GridMusicIcon name={name} artist={artist} url={url} />
+        return <GridMusicIcon name={name} artist={artist} url={url}  onPress={onPress}/>
     } else {
         return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} />
     }
 }
-function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
+function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {  
     return (
         <TouchableOpacity style={styles.songHorizontal}>
             <Image source={url} style={styles.styleFoto} />
@@ -54,9 +54,9 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
 
     );
 }
-function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourcePropType; artist?: string }) {
+function GridMusicIcon({ name, url, artist,onPress }: { name?: string; url: ImageSourcePropType; artist?: string ;onPress?: () => void;}) {
     return (
-        <TouchableOpacity style={styles.songGrid}>
+        <TouchableOpacity style={styles.songGrid} onPress={onPress}>
             <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
                 <View style ={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />

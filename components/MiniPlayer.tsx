@@ -57,7 +57,7 @@ export default function MiniPlayer() {
     }
   }, [textWidth]);
 
-  if (!currentTrack || pathname === "/player" || pathname === "/lyric") return null;
+  if (!currentTrack || pathname === "/player" || pathname === "/lyric" || pathname ==="/choosePlaylist") return null;
   return (
     <TouchableOpacity style={styles.container} onPress={() => router.push("/player")}>
       <View

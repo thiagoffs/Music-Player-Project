@@ -6,12 +6,12 @@ const Header = () => {
     const pathname = usePathname();
     return (
         <View style={styles.header}>
-            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/searchMusicLocal")}>
+            {pathname !== "/explore" && pathname !="/choosePlaylist" && <TouchableOpacity onPress={() => router.push("/searchMusicLocal")}>
                 <Image source={require("../assets/icons/search_header.png")} />
             </TouchableOpacity>
             }
             <Logo/>
-            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/config")}>
+            {pathname !== "/explore" && pathname !="/choosePlaylist" && <TouchableOpacity onPress={() => router.push("/config")}>
                 <Image source={require("../assets/icons/settings.png")} />
             </TouchableOpacity>
             }

@@ -8,7 +8,14 @@ export type MusicInfo = {
   path: string;
   duration?: number;
 };
-
+type Playlist = {
+  id: number;
+  name: string;
+};
+type PlaylistWithMusics = {
+  playlist: Playlist;
+  musics: MusicInfo[];
+};
 export async function useDatabase() {
   const database = await SQLite.openDatabaseAsync("beatfy.db");
 
@@ -19,16 +26,18 @@ export async function useDatabase() {
     try {
       const response = await database.getAllAsync<MusicInfo>(queryWithJoin);
       return response;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
 
   async function queryRandomAllMusics() {
     try {
-      const response = await database.getAllAsync<MusicInfo>("SELECT * FROM all_musics ORDER BY RANDOM() LIMIT 10");
+      const response = await database.getAllAsync<MusicInfo>(
+        "SELECT * FROM all_musics ORDER BY RANDOM() LIMIT 10"
+      );
       return response;
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   }
@@ -161,6 +170,89 @@ export async function useDatabase() {
     const response = await database.getAllAsync<MusicInfo>(query);
     return response;
   }
+  async function createPlaylist(name: string) {
+    const statement = await database.prepareAsync(
+      "INSERT INTO playlists(name) VALUES ($name)"
+    );
+
+    try {
+      await statement.executeAsync({ $name: name });
+    } finally {
+      await statement.finalizeAsync();
+    }
+  }
+  async function queryAllPlaylists(): Promise<Playlist[]> {
+    return await database.getAllAsync<Playlist>("SELECT * FROM playlists");
+  }
+  async function addMusicToPlaylist(playlistId: number, musicId: string) {
+    const statement = await database.prepareAsync(
+      "INSERT INTO playlist_music(playlist_id, music_id) VALUES ($playlistId, $musicId)"
+    );
+
+    try {
+      await statement.executeAsync({
+        $playlistId: playlistId,
+        $musicId: musicId,
+      });
+    } finally {
+      await statement.finalizeAsync();
+    }
+  }
+  async function getMusicsFromPlaylist(
+    playlistId: number
+  ): Promise<MusicInfo[]> {
+    const query = ` 
+    SELECT all_musics.id, all_musics.name, all_musics.artist, all_musics.url, all_musics.path, all_musics.duration
+    FROM playlist_music
+    LEFT JOIN all_musics ON playlist_music.music_id = all_musics.id
+    WHERE playlist_music.playlist_id = $playlistId
+  `;
+
+    return await database.getAllAsync<MusicInfo>(query, {
+      $playlistId: playlistId,
+    });
+  }
+  async function removeMusicFromPlaylist(playlistId: number, musicId: string) {
+    await database.runAsync(
+      "DELETE FROM playlist_music WHERE playlist_id = $playlistId AND music_id = $musicId",
+      { $playlistId: playlistId, $musicId: musicId }
+    );
+  }
+  async function getSongCountInPlaylist(playlistId: number): Promise<number> {
+    const result = await database.getFirstAsync<{ count: number }>(
+      `SELECT COUNT(*) as count FROM playlist_music WHERE playlist_id = $playlistId`,
+      { $playlistId: playlistId }
+    );
+    return result?.count ?? 0;
+  }
+  async function isMusicInPlaylist(
+    playlistId: number,
+    musicId: string
+  ): Promise<boolean> {
+    try {
+      const result = await database.getFirstAsync(
+        `SELECT * FROM playlist_music WHERE playlist_id = $playlistId AND music_id = $musicId`,
+        {
+          $playlistId: playlistId,
+          $musicId: musicId,
+        }
+      );
+
+      return !!result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async function deletePlaylist(playlistId: number) {
+    await database.runAsync(
+      "DELETE FROM playlist_music WHERE playlist_id = $playlistId",
+      { $playlistId: playlistId }
+    );
+
+    await database.runAsync("DELETE FROM playlists WHERE id = $playlistId", {
+      $playlistId: playlistId,
+    });
+  }
 
   return {
     queryRecentPlaysMusics,
@@ -173,6 +265,14 @@ export async function useDatabase() {
     addFavoriteMusic,
     removeFavoriteMusic,
     isFavoriteMusic,
-    queryFavoriteMusics
+    queryFavoriteMusics,
+    createPlaylist,
+    queryAllPlaylists,
+    addMusicToPlaylist,
+    getMusicsFromPlaylist,
+    removeMusicFromPlaylist,
+    getSongCountInPlaylist,
+    isMusicInPlaylist,
+    deletePlaylist
   };
 }

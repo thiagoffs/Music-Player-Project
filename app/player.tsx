@@ -11,15 +11,17 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import defaultSongIcon from "@/assets/icons/default-song.png";
 import { useDatabase } from "@/database/useDatabase";
-import { useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
-import {useTogglePlayPause,
+import {
+  useTogglePlayPause,
   useTogglePreviousSong,
   useToggleNextSong,
   useCurrentTrack,
   useIsPlaying, usePosition,
   useDuration,
-  useSeekTo,useSetVolume
+  useSeekTo, useSetVolume
 } from "@/store/playerSelectors";
 
 export default function Player() {
@@ -46,15 +48,19 @@ export default function Player() {
     const db = await database;
     await db.removeFavoriteMusic(musicId);
   }
-  useEffect(() => {
-    const checkFavorite = async () => {
-      if (currentTrack?.id) {
-        const favorite = await (await database).isFavoriteMusic(currentTrack.id);
-        setIsFavorite(favorite);
-      }
-    };
-    checkFavorite();
-  }, [currentTrack]);
+  useFocusEffect(
+    useCallback(() => {
+      const checkFavorite = async () => {
+        if (currentTrack?.id) {
+          const favorite = await (await database).isFavoriteMusic(currentTrack.id);
+          setIsFavorite(favorite);
+        }
+      };
+
+      checkFavorite();
+    }, [currentTrack])
+  );
+
 
   const formatMilliseconds = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / 60000);
@@ -94,7 +100,7 @@ export default function Player() {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={currentTrack?.image ? {uri: currentTrack.image} : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0}} />
+        <Image source={currentTrack?.image ? { uri: currentTrack.image } : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0 }} />
       </View>
       <View
         style={[
@@ -130,7 +136,7 @@ export default function Player() {
         </Text>
       </View>
       <View style={styles.addToandFavoriteView}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/choosePlaylist")}>
           <Ionicons
             name="list-outline"
             size={24}
