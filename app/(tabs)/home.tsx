@@ -18,96 +18,127 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Home() {
   const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
+    const [suggestion, setSuggestion] = useState<MusicInfo[] | null>([]);
   const [favorite, setFavorite] = useState<MusicInfo[] | null>([]);
   const colors = useThemeColors();
   const router = useRouter();
   const database = useDatabase();
 
-  const songs = async () => {
-    const songs = (await database).queryRecentPlaysMusics();
-    setRecentPlays(await songs);
-  };
-  const favoriteSongs = async () => {
-    const favorite = (await database).queryFavoriteMusics();
-    setFavorite(await favorite);
-  };
+    const suggestionSongs = async () => {
+        try {
+            if(suggestion !== null && suggestion.length > 0) return;
+            const songs = (await database).queryRandomAllMusics();
+            setSuggestion(await songs);
+        } catch(error) {
+            console.log("Erro ao consultar dados aleatórios da tabela all_musics: ", error);
+        }
+    };
+    const recentSongs = async () => {
+        try {
+            const songs = (await database).queryRecentPlaysMusics(); 
+            if((await songs).length === 0) {
+                suggestionSongs();
+            }
+            setRecentPlays(await songs);    
+        } catch(error) {
+            console.log("Erro ao transicionar dados no banco de dados: ", error);
+        }
+    };
+    const favoriteSongs = async () => {
+        const favorite = (await database).queryFavoriteMusics();
+        setFavorite(await favorite);
+    };    
 
-  useEffect(() => {
-    songs();
-    favoriteSongs();
-  }, [recentPlays, favorite]);
-  return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <Header />
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: "10%" }}
-        style={styles.scroll}
-      >
-        <View style={{ gap: 17 }}>
-          <View style={styles.buttonRadio}>
-            <Ionicons name="radio-outline" size={50} color={colors.text} />
-            <TouchableOpacity style={[styles.radioButton, {backgroundColor: colors.primary}]} onPress={() => router.push("/radio")}>
-              <Text style={[styles.text, {color: colors.text}]}>OUVIR RÁDIO</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.recents}>
-            <HomeSection
-              title="Tocadas Recentemente"
-              route={"/list/recent" as RelativePathString}
-              colors={colors}
-            />
+    useEffect(() => {
+        recentSongs();
+        favoriteSongs();        
+    }, [recentPlays, favorite]);
+    return (
+        <SafeAreaView style={styles.container}>
+            <Header />
             <ScrollView
-              horizontal={true}
-              contentContainerStyle={styles.listMusicCarrosel}
-              showsHorizontalScrollIndicator={false}
-            >
-              {recentPlays?.map((value, index) => {
-                if (index < 4) {
-                  return (
-                    <Music
-                      key={value.path ?? `${value.name} - ${index}`}
-                      mode="grid"
-                      name={value.name}
-                      artist={value.artist ?? "Desconhecido(a)"}
-                      url={{
-                        uri: value.url ?? "https://placecats.com/300/300",
-                      }}
-                      path={value.path}
-                    />
-                  );
-                }
-              })}
-            </ScrollView>
-          </View>
-          <View style={styles.favorite}>
-            <HomeSection
-              title="Favoritas"
-              route={"/list/favorites" as RelativePathString}
-              colors={colors}
-            />
-            <ScrollView
-              horizontal={true}
-              contentContainerStyle={styles.listMusicCarrosel}
-              showsHorizontalScrollIndicator={false}
-            >
-              {favorite?.map((value, index) => {
-                if (index < 4) {
-                  return (
-                    <Music
-                      key={value.path ?? `${value.name} - ${index}`}
-                      mode="grid"
-                      name={value.name}
-                      artist={value.artist ?? "Desconhecido(a)"}
-                      url={{
-                        uri: value.url ?? "https://placecats.com/300/300",
-                      }}
-                      path={value.path}
-                    />
-                  );
-                }
-              })}
-            </ScrollView>
-          </View>
+                contentContainerStyle={{ paddingBottom: "10%" }}
+                style={styles.scroll}>
+                <View style={{ gap: 17 }}>
+                    <View style={styles.buttonRadio}>
+                        <Image source={require("../../assets/images/ion_radio.png")} />
+                        <TouchableOpacity onPress={() => router.push("/radio")}>
+                            <Text style={styles.text}>OUVIR RÁDIO</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {
+                        recentPlays?.length === 0 ? (
+                            <View style={styles.recents}>
+                                <View style={styles.recentesTitle}>
+                                    <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>                                    
+                                </View>
+                                <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                                        {suggestion?.map((value, index) => {
+                                            return (
+                                                    <Music
+                                                        key={value.path?? `${value.name} - ${index}`}
+                                                        mode="grid"
+                                                        name={value.name}
+                                                        artist={value.artist ?? "Desconhecido(a)"}
+                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
+                                                        path={value.path}
+                                                    />
+                                                );
+                                        })}
+                                </ScrollView>
+                            </View>
+                        ) : ( 
+                                <View style={styles.recents}>
+                                    <View style={styles.recentesTitle}>
+                                        <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
+                                        <TouchableOpacity onPress={() => router.push("/list/recent")}>
+                                            <AntDesign name="arrowright" size={29} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                                        {recentPlays?.map((value, index) => {
+                                            if (index < 4) {
+                                                return (
+                                                    <Music
+                                                        key={value.path?? `${value.name} - ${index}`}
+                                                        mode="grid"
+                                                        name={value.name}
+                                                        artist={value.artist ?? "Desconhecido(a)"}
+                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
+                                                        path={value.path}
+                                                    />
+                                                );
+                                            }
+                                        })}
+                                    </ScrollView>
+                                </View>
+                            )
+                    }                                            
+                    <View style={styles.favorite}>
+                        <View style={styles.recentesTitle}>
+                            <Text style={styles.recentsTitleText}>Favoritas</Text>
+                            <TouchableOpacity onPress={() => router.push("/list/favorites")}>
+                                <AntDesign name="arrowright" size={29} color="white" />
+                            </TouchableOpacity>
+                        </View>
+                        <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                            {favorite?.map((value, index) => {
+                                if (index < 4) {
+                                    return (
+                                        <Music
+                                            key={value.path?? `${value.name} - ${index}`}
+                                            mode="grid"
+                                            name={value.name}
+                                            artist={value.artist ?? "Desconhecido(a)"}
+                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }}
+                                            path={value.path}
+                                        />
+                                    );
+                                }
+                            })}
+                        </ScrollView>
+                    </View>
 
           <View>
             <HomeSection

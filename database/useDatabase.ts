@@ -16,8 +16,21 @@ export async function useDatabase() {
     const queryWithJoin =
       "SELECT all_musics.id, all_musics.name, all_musics.artist, all_musics.url, all_musics.path," +
       "all_musics.duration FROM recent_plays LEFT JOIN all_musics ON recent_plays.id_music = all_musics.id ORDER BY recent_plays.quantity_plays DESC";
-    const response = await database.getAllAsync<MusicInfo>(queryWithJoin);
-    return response;
+    try {
+      const response = await database.getAllAsync<MusicInfo>(queryWithJoin);
+      return response;
+    } catch(error) {
+      throw error;
+    }
+  }
+
+  async function queryRandomAllMusics() {
+    try {
+      const response = await database.getAllAsync<MusicInfo>("SELECT * FROM all_musics ORDER BY RANDOM() LIMIT 10");
+      return response;
+    } catch(error) {
+      throw error;
+    }
   }
 
   async function existsDataOnAllMusicTable() {
@@ -151,6 +164,7 @@ export async function useDatabase() {
 
   return {
     queryRecentPlaysMusics,
+    queryRandomAllMusics,
     existsDataOnAllMusicTable,
     existsDataOnRecentPlays,
     insertInAllMusicsTable,
