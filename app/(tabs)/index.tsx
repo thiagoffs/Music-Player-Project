@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { useMusics } from "@/Context/musicContext";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import * as MediaLibrary from "expo-media-library";
 import type { Asset } from "expo-media-library";
 import Music from "@/components/Music";
@@ -14,7 +15,7 @@ export default function Index() {
   const { musics, setMusics } = useMusics();
   const [responsePermissions, requestPermissions] = MediaLibrary.usePermissions();
   const database = useDatabase();
-
+  const colors = useThemeColors();
   const playTrack = usePlayTrack();
 
   const getPermissions = async () => {
@@ -60,7 +61,7 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
      <Header/>
       <View style={{ width: "100%", height: "100%"}}>        
         <FlatList
@@ -73,7 +74,8 @@ export default function Index() {
               name = {infoItem.item.filename} 
               id = {infoItem.item.id}
               path = { infoItem.item.uri }
-              artist = "Desconhecido(a)"   
+              artist = "Desconhecido(a)" 
+              colors = {colors}  
               onPress = {() => playTrack(infoItem.item, musics?.assets as Asset[])}           
             />          
           }

@@ -10,6 +10,7 @@ type Props = {
     mode?: "horizontal" | "vertical" | "grid" | "local";
     path?: string;
     onPress?: () => void;
+    colors?: any
 };
 
 type Track = {
@@ -21,7 +22,7 @@ type Track = {
   name: string;
 };
 
-export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress }: Props) {
+export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress, colors }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
@@ -29,7 +30,7 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} />
     } else {
-        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} />
+        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
     }
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -66,7 +67,7 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
 
     );
 }
-function LocalMusicIcon({ name, url, artist, path, id }: Props) {
+function LocalMusicIcon({ name, url, artist, path, id, colors }: Props) {
     const formattedName = name?.split(".");
     const playTrack = usePlayTrack();
     return (
@@ -100,8 +101,8 @@ function LocalMusicIcon({ name, url, artist, path, id }: Props) {
             <Image source={url} style={{ width: 25, height: 25 }} />
           </View>
           <View style={{ flexDirection: "column", paddingLeft: 10,flex:1 }}>
-            <Text style={styles.localTittle}>{formattedName![0]}</Text>
-            <Text style={styles.localArtistName}>{artist}</Text>
+            <Text style={[styles.localTittle, {color: colors.text}]}>{formattedName![0]}</Text>
+            <Text style={[styles.localArtistName, {color: colors.textSecondary}]}>{artist}</Text>
           </View>
         </TouchableOpacity>
     );

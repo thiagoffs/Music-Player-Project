@@ -2,11 +2,13 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import MiniPlayer from "@/components/MiniPlayer";
 import { MusicProvider } from "@/Context/musicContext";
+import { useThemeStore } from "@/store/themeStore";
 
 export default function RootLayout() {
+  const theme = useThemeStore((state) => state.theme);
   return (
       <MusicProvider>
-        <StatusBar style="light" />
+        <StatusBar style={theme === "dark" ? "light" : "dark"} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="radio" />
           <Stack.Screen name="player" />

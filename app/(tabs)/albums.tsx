@@ -1,13 +1,13 @@
 import Header from "@/components/Header";
-import { View, StyleSheet, Text, SafeAreaView } from "react-native";
+import { View, StyleSheet, SafeAreaView } from "react-native";
+import { useThemeColors } from "@/hooks/useThemeColor";
 
-//Tela Album
 export default function Album() {
+  const colors = useThemeColors();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Header />
       <View style={styles.content}>
-        <Text style={{ fontSize: 30, color: "#fff", textAlign: "center" }}>Tela Álbuns</Text>
       </View>
     </SafeAreaView>
   );
@@ -15,7 +15,6 @@ export default function Album() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#2F2A2A",
     flex: 1,
     alignItems: "center",
     paddingTop: 20
@@ -23,5 +22,4 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-
 });

@@ -1,18 +1,25 @@
-import { TouchableOpacity, Image, Text, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { Link } from "expo-router";
 import type { LinkProps } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { usePathname } from "expo-router";
 
-const NavMenuItem = ({ icon, text,route }: { icon: any; text: string; route: LinkProps["href"]}) => {
-
+const NavMenuItem = ({ icon, text, route }: { icon: keyof typeof Ionicons.glyphMap; text: string; route: LinkProps["href"] }) => {
+  const colors = useThemeColors();
   const pathname = usePathname();
   const cleanPath = (path: string) => path.replace("/(tabs)", "");
   const isActive = cleanPath(pathname) === cleanPath(typeof route === "string" ? route : "");
     return (
     <Link href={route} asChild style={{ flex: 1 }}>
     <TouchableOpacity style={styles.button}>
-      <Image source={typeof icon === "string" ? { uri: icon } : icon} style={[styles.image, isActive && styles.activeImage] } />
-      <Text style={isActive ? styles.text : {display: "none"}}>{text}</Text>
+      <Ionicons
+        style={[styles.image, isActive && styles.activeImage]}
+        name={icon}
+        size={20}
+        color={isActive ? colors.primary : colors.text}
+      />
+      <Text style={isActive ? [styles.text, {color: colors.text}] : {display: "none"}}>{text}</Text>
     </TouchableOpacity>
     </Link>
   );
@@ -33,10 +40,10 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   image: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     marginBottom: 5,
-    opacity: 0.6,
+    opacity: 0.5,
   },
   activeImage: {
     transform: [{ scale: 1.3 }],
