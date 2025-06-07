@@ -28,7 +28,7 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-        return <GridMusicIcon name={name} artist={artist} url={url} />
+        return <GridMusicIcon name={name} artist={artist} url={url} colors={colors} />
     } else {
         return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
     }
@@ -55,15 +55,15 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
 
     );
 }
-function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourcePropType; artist?: string }) {
+function GridMusicIcon({ name, url, artist, colors }: { name?: string; url: ImageSourcePropType; artist?: string, colors: any }) {
     return (
         <TouchableOpacity style={styles.songGrid}>
-            <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
+            <View style={{flex:1,  alignItems:"center"}}>
                 <View style ={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />
                 </View>
-                <Text style={styles.songTitleGrid} numberOfLines={3}>{name?.split(".")[0]}</Text>
-                <Text style={styles.songSubTitleGrid} numberOfLines={1}>{artist}</Text>
+                <Text style={[styles.songTitleGrid, {color: colors.text}]} numberOfLines={3}>{name?.split(".")[0]}</Text>
+                <Text style={[styles.songSubTitleGrid, {color: colors.secondary}]} numberOfLines={1}>{artist}</Text>
             </View>
         </TouchableOpacity>
 
@@ -121,16 +121,14 @@ const styles = StyleSheet.create({
     fotoGridContainer: {
         alignItems: "center",
         justifyContent: "center",
-        width: "100%",
+        width: 147,
         height: 122,
         backgroundColor: "#C1C1C1",
-        borderRadius: 35,
+        borderRadius: 15,
         marginBottom: 10,
-        boxShadow: "0px 4px 4px #171C27",
     },
     styleFotoGrid: {
-        width: "100%",
-        height: "100%",
+        height: 90,
         resizeMode: "center",    
     },
     songHorizontal: {

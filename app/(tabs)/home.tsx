@@ -14,7 +14,6 @@ import { useDatabase, type MusicInfo } from "@/database/useDatabase";
 import HomeSection from "@/components/HomeSection";
 import { RelativePathString, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Home() {
   const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
@@ -99,6 +98,7 @@ export default function Home() {
                         require("../../assets/icons/default-song.png")
                       }
                       path={value.path}
+                      colors={colors}
                     />
                   );
                 })}
@@ -106,15 +106,11 @@ export default function Home() {
             </View>
           ) : (
             <View style={styles.recents}>
-              <View style={styles.recentesTitle}>
-                <Text style={styles.recentsTitleText}>
-                  Tocadas Recentemente
-                </Text>
-                <TouchableOpacity onPress={() => router.push("/list/recent")}>
-                  <AntDesign name="arrowright" size={29} color="white" />
-                </TouchableOpacity>
-              </View>
-
+              <HomeSection
+                title="Tocadas Recentemente"
+                route={"/list/recent" as RelativePathString}
+                colors={colors}
+              />
               <ScrollView
                 horizontal={true}
                 contentContainerStyle={styles.listMusicCarrosel}
@@ -133,6 +129,7 @@ export default function Home() {
                           require("../../assets/icons/default-song.png")
                         }
                         path={value.path}
+                        colors={colors}
                       />
                     );
                   }
