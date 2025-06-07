@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { usePlayTrack } from "@/store/playerSelectors";
+import { useThemeColors } from "@/hooks/useThemeColor";
+
 
 type Props = {
     id?: string;
@@ -56,14 +58,15 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
     );
 }
 function GridMusicIcon({ name, url, artist, onPress }: { name?: string; url: ImageSourcePropType; artist?: string; onPress?: () => void; }) {
+    const themeColors = useThemeColors();
     return (
         <TouchableOpacity style={styles.songGrid} onPress={onPress}>
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                 <View style={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />
                 </View>
-                <Text style={styles.songTitleGrid} numberOfLines={3}>{name?.split(".")[0]}</Text>
-                <Text style={styles.songSubTitleGrid} numberOfLines={1}>{artist}</Text>
+                <Text style={[styles.songTitleGrid, { color: themeColors.text }]} numberOfLines={3}>{name?.split(".")[0]}</Text>
+                <Text style={[styles.songSubTitleGrid, { color: themeColors.textSecondary }]} numberOfLines={1}>{artist}</Text>
             </View>
         </TouchableOpacity>
 

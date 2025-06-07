@@ -128,12 +128,8 @@ export default function Home() {
           </View>
         ) : (
           <View style={styles.recents}>
-            <View style={styles.recentesTitle}>
-              <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
-              <TouchableOpacity onPress={() => router.push("/list/recent")}>
-                <AntDesign name="arrowright" size={29} color="white" />
-              </TouchableOpacity>
-            </View>
+           <HomeSection title="Tocadas Recentemente" route={"/list/recent" as RelativePathString}  colors={colors} />
+
             <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
               {recentPlays?.slice(0, 4).map((value, index) => (
                 <Music
@@ -150,12 +146,7 @@ export default function Home() {
         )}
 
         <View style={styles.favorite}>
-          <View style={styles.recentesTitle}>
-            <Text style={styles.recentsTitleText}>Favoritas</Text>
-            <TouchableOpacity onPress={() => router.push("/list/favorites")}>
-              <AntDesign name="arrowright" size={29} color="white" />
-            </TouchableOpacity>
-          </View>
+         <HomeSection title="Favoritas" route={"/list/favorites" as RelativePathString} colors={colors} />
           <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
             {favorite?.slice(0, 4).map((value, index) => (
               <Music
@@ -187,12 +178,8 @@ export default function Home() {
         </View>
 
         <View>
-          <View style={styles.recentesTitle}>
-            <Text style={styles.recentsTitleText}>PlayLists</Text>
-            <TouchableOpacity onPress={() => router.push("/playlists")}>
-              <AntDesign name="arrowright" size={29} color="white" />
-            </TouchableOpacity>
-          </View>
+          <HomeSection title="PlayLists" route={"/playlists" as RelativePathString}  colors={colors} />
+
 
           <View style={styles.albuns}>
             {playlists?.slice(0, 4).map((playlist) => (

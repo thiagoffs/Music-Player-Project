@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { View, StyleSheet, Text, SafeAreaView, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
 import { useEffect, useState } from "react";
 import { useDatabase } from "@/database/useDatabase";
+import { useThemeColors } from "@/hooks/useThemeColor";
 
 const mockData = {
     albums: [
@@ -94,9 +95,10 @@ export default function PageList() {
         fetchData();
     }, [items]);
 
+  const colors = useThemeColors();
 
     return (
-        <SafeAreaView style={styles.container}>
+  <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
             <Header />
             <View style={styles.content}>
                 <View style={styles.containerTitlePage}>
