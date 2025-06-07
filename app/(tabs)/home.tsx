@@ -18,201 +18,164 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Home() {
   const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
-    const [suggestion, setSuggestion] = useState<MusicInfo[] | null>([]);
+  const [suggestion, setSuggestion] = useState<MusicInfo[] | null>([]);
   const [favorite, setFavorite] = useState<MusicInfo[] | null>([]);
   const colors = useThemeColors();
   const router = useRouter();
   const database = useDatabase();
 
-    const suggestionSongs = async () => {
-        try {
-            if(suggestion !== null && suggestion.length > 0) return;
-            const songs = (await database).queryRandomAllMusics();
-            setSuggestion(await songs);
-        } catch(error) {
-            console.log("Erro ao consultar dados aleatórios da tabela all_musics: ", error);
-        }
-    };
-    const recentSongs = async () => {
-        try {
-            const songs = (await database).queryRecentPlaysMusics(); 
-            if((await songs).length === 0) {
-                suggestionSongs();
-            }
-            setRecentPlays(await songs);    
-        } catch(error) {
-            console.log("Erro ao transicionar dados no banco de dados: ", error);
-        }
-    };
-    const favoriteSongs = async () => {
-        const favorite = (await database).queryFavoriteMusics();
-        setFavorite(await favorite);
-    };    
+  const suggestionSongs = async () => {
+    try {
+      if (suggestion !== null && suggestion.length > 0) return;
+      const songs = (await database).queryRandomAllMusics();
+      setSuggestion(await songs);
+    } catch (error) {
+      console.log(
+        "Erro ao consultar dados aleatórios da tabela all_musics: ",
+        error
+      );
+    }
+  };
+  const recentSongs = async () => {
+    try {
+      const songs = (await database).queryRecentPlaysMusics();
+      if ((await songs).length === 0) {
+        suggestionSongs();
+      }
+      setRecentPlays(await songs);
+    } catch (error) {
+      console.log("Erro ao transicionar dados no banco de dados: ", error);
+    }
+  };
+  const favoriteSongs = async () => {
+    const favorite = (await database).queryFavoriteMusics();
+    setFavorite(await favorite);
+  };
 
-    useEffect(() => {
-        recentSongs();
-        favoriteSongs();        
-    }, [recentPlays, favorite]);
-    return (
-        <SafeAreaView style={styles.container}>
-            <Header />
+  useEffect(() => {
+    recentSongs();
+    favoriteSongs();
+  }, [recentPlays, favorite]);
+  return (
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <Header />
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: "10%" }}
+        style={styles.scroll}
+      >
+        <View style={{ gap: 17 }}>
+          <View style={styles.buttonRadio}>
+            <Ionicons name="radio-outline" size={60} color={colors.text} />
+            <TouchableOpacity
+              onPress={() => router.push("/radio")}
+              style={[styles.radioButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={styles.text}>OUVIR RÁDIO</Text>
+            </TouchableOpacity>
+          </View>
+          {recentPlays?.length === 0 ? (
+            <View style={styles.recents}>
+              <View style={styles.recentesTitle}>
+                <Text style={styles.recentsTitleText}>
+                  Recomendadas para Você
+                </Text>
+              </View>
+              <ScrollView
+                horizontal={true}
+                contentContainerStyle={styles.listMusicCarrosel}
+                showsHorizontalScrollIndicator={false}
+              >
+                {suggestion?.map((value, index) => {
+                  return (
+                    <Music
+                      key={value.path ?? `${value.name} - ${index}`}
+                      mode="grid"
+                      name={value.name}
+                      artist={value.artist ?? "Desconhecido(a)"}
+                      url={
+                        value.url ??
+                        require("../../assets/icons/default-song.png")
+                      }
+                      path={value.path}
+                    />
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.recents}>
+              <View style={styles.recentesTitle}>
+                <Text style={styles.recentsTitleText}>
+                  Tocadas Recentemente
+                </Text>
+                <TouchableOpacity onPress={() => router.push("/list/recent")}>
+                  <AntDesign name="arrowright" size={29} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                horizontal={true}
+                contentContainerStyle={styles.listMusicCarrosel}
+                showsHorizontalScrollIndicator={false}
+              >
+                {recentPlays?.map((value, index) => {
+                  if (index < 4) {
+                    return (
+                      <Music
+                        key={value.path ?? `${value.name} - ${index}`}
+                        mode="grid"
+                        name={value.name}
+                        artist={value.artist ?? "Desconhecido(a)"}
+                        url={
+                          value.url ??
+                          require("../../assets/icons/default-song.png")
+                        }
+                        path={value.path}
+                      />
+                    );
+                  }
+                })}
+              </ScrollView>
+            </View>
+          )}
+          <View style={styles.favorite}>
+            <HomeSection
+              title="Favoritas"
+              route={"/list/favorites" as RelativePathString}
+              colors={colors}
+            />
             <ScrollView
-                contentContainerStyle={{ paddingBottom: "10%" }}
-                style={styles.scroll}>
-                <View style={{ gap: 17 }}>
-                    <View style={styles.buttonRadio}>
-                        <Image source={require("../../assets/images/ion_radio.png")} />
-                        <TouchableOpacity onPress={() => router.push("/radio")}>
-                            <Text style={styles.text}>OUVIR RÁDIO</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {
-                        recentPlays?.length === 0 ? (
-                            <View style={styles.recents}>
-                                <View style={styles.recentesTitle}>
-                                    <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>                                    
-                                </View>
-                                <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-                                        {suggestion?.map((value, index) => {
-                                            return (
-                                                    <Music
-                                                        key={value.path?? `${value.name} - ${index}`}
-                                                        mode="grid"
-                                                        name={value.name}
-                                                        artist={value.artist ?? "Desconhecido(a)"}
-                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
-                                                        path={value.path}
-                                                    />
-                                                );
-                                        })}
-                                </ScrollView>
-                            </View>
-                        ) : ( 
-                                <View style={styles.recents}>
-                                    <View style={styles.recentesTitle}>
-                                        <Text style={styles.recentsTitleText}>Tocadas Recentemente</Text>
-                                        <TouchableOpacity onPress={() => router.push("/list/recent")}>
-                                            <AntDesign name="arrowright" size={29} color="white" />
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-                                        {recentPlays?.map((value, index) => {
-                                            if (index < 4) {
-                                                return (
-                                                    <Music
-                                                        key={value.path?? `${value.name} - ${index}`}
-                                                        mode="grid"
-                                                        name={value.name}
-                                                        artist={value.artist ?? "Desconhecido(a)"}
-                                                        url={value.url ?? require("../../assets/icons/default-song.png")}
-                                                        path={value.path}
-                                                    />
-                                                );
-                                            }
-                                        })}
-                                    </ScrollView>
-                                </View>
-                            )
-                    }                                            
-                    <View style={styles.favorite}>
-                        <View style={styles.recentesTitle}>
-                            <Text style={styles.recentsTitleText}>Favoritas</Text>
-                            <TouchableOpacity onPress={() => router.push("/list/favorites")}>
-                                <AntDesign name="arrowright" size={29} color="white" />
-                            </TouchableOpacity>
-                        </View>
-                        <ScrollView horizontal={true} contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-                            {favorite?.map((value, index) => {
-                                if (index < 4) {
-                                    return (
-                                        <Music
-                                            key={value.path?? `${value.name} - ${index}`}
-                                            mode="grid"
-                                            name={value.name}
-                                            artist={value.artist ?? "Desconhecido(a)"}
-                                            url={{ uri: value.url ?? "https://placecats.com/300/300" }}
-                                            path={value.path}
-                                        />
-                                    );
-                                }
-                            })}
-                        </ScrollView>
-                    </View>
+              horizontal={true}
+              contentContainerStyle={styles.listMusicCarrosel}
+              showsHorizontalScrollIndicator={false}
+            >
+              {favorite?.map((value, index) => {
+                if (index < 4) {
+                  return (
+                    <Music
+                      key={value.path ?? `${value.name} - ${index}`}
+                      mode="grid"
+                      name={value.name}
+                      artist={value.artist ?? "Desconhecido(a)"}
+                      url={{
+                        uri: value.url ?? "https://placecats.com/300/300",
+                      }}
+                      path={value.path}
+                    />
+                  );
+                }
+              })}
+            </ScrollView>
+          </View>
 
           <View>
             <HomeSection
-              title="Álbuns"
-              route={"/list/albums" as RelativePathString}
+              title="Playlists"
+              route={"/list/playlists" as RelativePathString}
               colors={colors}
             />
-
-            <View style={styles.albuns}>
-              <Music
-                mode="grid"
-                name="Plastic Beach"
-                artist="Gorillaz"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example7"
-                path="/file/music/example.mp3"
-              />
-              <Music
-                mode="grid"
-                name="True Defiance"
-                artist="Demon Hunter"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example8"
-                path="/file/music/example.mp3"
-              />
-              <Music
-                mode="grid"
-                name="Bis Jovem Guarda"
-                artist="Paulo Sergio"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example9"
-                path="/file/music/example.mp3"
-              />
-              <Music
-                mode="grid"
-                name="20 Super Sucessos"
-                artist="José Ribeiro"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example10"
-                path="/file/music/example.mp3"
-              />
-            </View>
-          </View>
-          <View>
-            <View style={styles.recentesTitle}>
-              <Text style={styles.recentsTitleText}>PlayLists</Text>
-              <TouchableOpacity onPress={() => router.push("/list/playlists")}>
-                <AntDesign name="arrowright" size={29} color="white" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.albuns}>
-              <Music
-                mode="grid"
-                name="Ficar Monstrão"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example11"
-                path="/file/music/example.mp3"
-              />
-              <Music
-                mode="grid"
-                name="As Melhores Clássicas"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example12"
-                path="/file/music/example.mp3"
-              />
-              <Music
-                mode="grid"
-                name="As Melhores Clássicas"
-                url={{ uri: "https://placecats.com/300/300" }}
-                key="example13"
-                path="/file/music/example.mp3"
-              />
-            </View>
           </View>
         </View>
       </ScrollView>
