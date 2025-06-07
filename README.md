@@ -53,5 +53,5 @@ Permite ouvir músicas locais, buscar faixas online, escutar rádio ao vivo e mu
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido com fins **acadêmicos**.  
+Este projeto foi desenvolvido com fins *acadêmicos*.  
 
