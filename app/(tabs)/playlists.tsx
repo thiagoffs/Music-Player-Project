@@ -6,6 +6,7 @@ import { useFocusEffect } from "expo-router";
 import { useDatabase } from "@/database/useDatabase";
 import ModalPlaylistDetails from "@/components/ModalPlaylistDetails";
 import { Ionicons } from "@expo/vector-icons";
+import { useThemeColors } from "@/hooks/useThemeColor";
 
 export type MusicInfo = {
   id: string;
@@ -93,9 +94,10 @@ export default function PlayLists() {
     useCallback(() => {
       fetchPlaylists();
     }, [])
-  );
+  ); 
+  const colors = useThemeColors();
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <Header />
       <View style={styles.content}>
         <ScrollView contentContainerStyle={styles.scroll}>
@@ -158,6 +160,7 @@ export default function PlayLists() {
           )}
 
         </ScrollView>
+
       </View>
       {isModalVisibleAdd && (
         <View style={styles.modal}>
@@ -214,7 +217,6 @@ export default function PlayLists() {
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#2F2A2A",
     flex: 1,
     alignItems: "center",
     paddingTop: 20,

@@ -1,50 +1,57 @@
-# Welcome to your Expo app 👋
+# Beatfy – Music Player 🎵 ![Platform](https://img.shields.io/badge/platform-Android-blue)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
+> ⚠️ Disponível atualmente apenas para dispositivos Android.
 
-1. Install dependencies
+Beatfy foi projetado para oferecer uma experiência de reprodução de músicas acessível, fluida e altamente personalizada.  
+Permite ouvir músicas locais, buscar faixas online, escutar rádio ao vivo e muito mais.
 
-   ```bash
-   npm install
-   ```
 
-2. Start the app
+---
 
-   ```bash
-    npx expo start
-   ```
+## ✨ Funcionalidades
 
-In the output, you'll find options to open the app in a
+- 🎵 Reprodução de músicas locais
+- 🌐 Busca e reprodução online via API
+- 📻 Rádio digital em tempo real
+- 📝 Exibição de letras sincronizadas
+- 🔍 Pesquisa por nome de música
+- 📁 Organização por artista, álbum e favoritos
+- 🎧 Criação de playlists personalizadas
+- 🎚 Equalizador e controle de volume
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
 
-When you're ready, run:
+## 🛠 Tecnologias Utilizadas
 
-```bash
-npm run reset-project
-```
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [Figma](https://www.figma.com/)
+- [NPM / NPX](https://www.npmjs.com/)
+- [Git + GitHub](https://github.com/)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 📌 Limitações Atuais
 
-To learn more about developing your project with Expo, look at the following resources:
+- ❌ Disponível apenas para Android
+- 📶 Algumas funcionalidades requerem conexão com a internet
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
 
-Join our community of developers creating universal apps.
+## 👨‍💻 Desenvolvedores
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- José Klesley Pereira Feitosa
+- Pablo Henrique Dantas de Sá
+- Pedro Henrique Cavalcante dos Santos
+- Thiago Ferreira Batista dos Santos
+
+---
+
+## 📄 Licença
+
+Este projeto foi desenvolvido com fins **acadêmicos**.  
+

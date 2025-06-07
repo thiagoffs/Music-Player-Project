@@ -1,13 +1,14 @@
 import { usePlaySelectedTrack } from "@/store/playerSelectors";
-import { Image, Text, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { useState, useEffect } from "react";
+import { Image, Text, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 type TrendingSongsProps = {
   type: "trending" | "monthly" | "yearly" | "allTime" | "playlists" | "artists";
+  colors: any;
 }
 
-export default function GetTrendingSongs({ type }: TrendingSongsProps) {
+export default function GetTrendingSongs({ type, colors }: TrendingSongsProps) {
   const [requestedResource, setRequestedResource] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const playSelectedTrack = usePlaySelectedTrack();
@@ -19,6 +20,15 @@ export default function GetTrendingSongs({ type }: TrendingSongsProps) {
     allTime: "https://discoveryprovider.audius.co/v1/tracks/trending?time=allTime",
     playlists: "https://discoveryprovider.audius.co/v1/playlists/trending",
   };
+
+  const handlePress = useCallback((item:any) => {
+     playSelectedTrack(
+       item.id,
+       item.title,
+       item.user.name,
+       item.artwork["480x480"]
+     );
+  }, [requestedResource])
 
   useEffect(() => {
     async function fetchTrending() {
@@ -50,45 +60,38 @@ export default function GetTrendingSongs({ type }: TrendingSongsProps) {
   if (loading) {
     return (
       <View style={{ padding: 20, alignItems: "center" }}>
-        <Text style={{ fontSize: 16, color: "#fff" }}>
+        <Text style={{ fontSize: 16, color: colors.text }}>
           Carregando músicas...
         </Text>
       </View>
     );
   }
   return (
-    <ScrollView
-      style={styles.container}
+    <FlatList
+      style={[styles.container, { backgroundColor: colors.background }]}
       horizontal
       showsHorizontalScrollIndicator={false}
-    >
-      {requestedResource.map((item) => (
+      data={requestedResource}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
         <TouchableOpacity
           key={item.id}
           style={styles.item}
-          onPress={() => {
-            playSelectedTrack(
-              item.id,
-              item.title,
-              item.user.name,
-              item.artwork["480x480"]
-            );
-            console.log(item.artwork);
-          }}
+          onPress={() => handlePress(item)}
         >
           <Image
             source={{ uri: item.artwork["150x150"] }} // possíveis valores aqui são 150x150, 480x480 e 1000x1000, mas ao testar valores maiores que 150x150 o app fica lento. Quanto maior a resolução, mais bonita a imagem fica
             style={styles.image}
           />
-          <Text style={styles.title}>
+          <Text style={[styles.title, { color: colors.text }]}>
             {type !== "playlists" ? item.title : item.playlist_name}
           </Text>
-          <Text style={styles.artist}>
+          <Text style={[styles.artist, { color: colors.textSecondary }]}>
             {type !== "playlists" ? item.user.name : ""}
           </Text>
         </TouchableOpacity>
-      ))}
-    </ScrollView>
+      )}
+    />
   );
 }
 const styles = StyleSheet.create({
@@ -97,7 +100,6 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   title: {
-    color: "#fff",
     fontSize: 15,
     fontWeight: "600",
     maxWidth: 130,
@@ -107,7 +109,6 @@ const styles = StyleSheet.create({
   item: {
     padding: 10,
     maxWidth: 130,
-    // maxHeight: 150,
     overflow: "hidden",
     textOverflow: "ellipsis",
   },

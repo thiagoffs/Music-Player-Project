@@ -1,5 +1,6 @@
-import { SafeAreaView, View, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { SafeAreaView, View, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useState, useEffect, useRef } from "react";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import { Audio } from "expo-av";
 import Slider from "@react-native-community/slider"; 
 import { Sound } from "expo-av/build/Audio";
@@ -16,6 +17,7 @@ export default function Radio() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [sound, setSound] = useState<Sound | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const colors = useThemeColors();
   const volume = useRef(0.5);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
@@ -71,50 +73,55 @@ export default function Radio() {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <Animated.Image
-          source={require("../assets/images/ion_radio.png")}
-          style={
-            isPlaying ? [styles.radioImage, animatedStyle] : styles.radioImage
-          }
-        />
-        <View style={styles.controlsButtons}>
-          <TouchableOpacity
-            onPress={isPlaying ? stopAudio : playAudio}
-            style={styles.playButton}
-          >
-            <ActivityIndicator
-              size={"large"}
-              color={"#000000"}
-              animating={isLoading}
-              hidesWhenStopped={true}
-              style={styles.activityIndicator}
-            />
-            <Ionicons
-              name={isPlaying ? "pause-circle" : "play-circle"}
-              size={80}
-              color={"#FFF"}
-              style={isLoading ? styles.playButtonImageAllWhite : styles.playButtonImage}
-            />
-          </TouchableOpacity>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={1}
-            thumbTintColor="#FFF"
-            minimumTrackTintColor="#FFF"
-            maximumTrackTintColor="#FFF"
-            value={volume.current}
-            step={0.01}
-            onValueChange={(value) => {
-              volume.current = value;
-              if (sound) {
-                sound.setVolumeAsync(value);
-              }
-            }}
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <Animated.View style={isPlaying ? [styles.radioImage, animatedStyle] : styles.radioImage}>
+        <Ionicons
+          name="radio-outline"
+          size={70}
+          color={colors.text}
+                  />
+      </Animated.View>
+      <View style={styles.controlsButtons}>
+        <TouchableOpacity
+          onPress={isPlaying ? stopAudio : playAudio}
+          style={styles.playButton}
+        >
+          <ActivityIndicator
+            size={"large"}
+            color={"#000000"}
+            animating={isLoading}
+            hidesWhenStopped={true}
+            style={styles.activityIndicator}
           />
-        </View>
+          <Ionicons
+            name={isPlaying ? "pause-circle" : "play-circle"}
+            size={80}
+            color={colors.text}
+            style={
+              isLoading
+                ? styles.playButtonImageAllWhite
+                : styles.playButtonImage
+            }
+          />
+        </TouchableOpacity>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={1}
+          thumbTintColor={colors.primary}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.primary}
+          value={volume.current}
+          step={0.01}
+          onValueChange={(value) => {
+            volume.current = value;
+            if (sound) {
+              sound.setVolumeAsync(value);
+            }
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -122,7 +129,6 @@ export default function Radio() {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    backgroundColor: "#2F2A2A",
     flex: 1,
     alignItems: "center",
   },
@@ -146,7 +152,7 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     position: "absolute",
-    zIndex: 1,
+    zIndex: 10,
     inset: 0,
     margin: "auto",
     width: 80,

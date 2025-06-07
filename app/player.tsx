@@ -5,17 +5,16 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Slider from "@react-native-community/slider";
-import { useRouter } from "expo-router";
+import { useThemeColors } from "@/hooks/useThemeColor";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import defaultSongIcon from "@/assets/icons/default-song.png";
 import { useDatabase } from "@/database/useDatabase";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
 
-import {
-  useTogglePlayPause,
+import { useEffect, memo } from "react";
+import {useTogglePlayPause,
   useTogglePreviousSong,
   useToggleNextSong,
   useCurrentTrack,
@@ -23,13 +22,12 @@ import {
   useDuration,
   useSeekTo, useSetVolume
 } from "@/store/playerSelectors";
-
-export default function Player() {
+const Player = memo(function Player() {
   const [volume, setVolumeState] = useState(1);
   const router = useRouter();
   const database = useDatabase();
   const [isFavorite, setIsFavorite] = useState(false);
-
+  const colors = useThemeColors();
   const currentTrack = useCurrentTrack();
   const isPlaying = useIsPlaying();
   const position = usePosition();
@@ -98,7 +96,7 @@ export default function Player() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.imageContainer}>
         <Image source={currentTrack?.image ? { uri: currentTrack.image } : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0 }} />
       </View>
@@ -108,30 +106,30 @@ export default function Player() {
           { gap: 5, marginTop: 38, marginBottom: 48 },
         ]}
       >
-        <Text style={styles.text}>{formatMilliseconds(position)}</Text>
+        <Text style={[styles.text, {color: colors.text}]}>{formatMilliseconds(position)}</Text>
         <Slider
           style={styles.slider}
           minimumValue={0}
           maximumValue={duration}
-          thumbTintColor="#435A88"
-          minimumTrackTintColor="#FFF"
-          maximumTrackTintColor="#FFF"
+          thumbTintColor={colors.primary}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.primary}
           value={position}
           step={1}
           onSlidingComplete={handleSeek}
         />
-        <Text style={styles.text}>{formatMilliseconds(duration)}</Text>
+        <Text style={[styles.text, {color: colors.text}]}>{formatMilliseconds(duration)}</Text>
       </View>
       <View style={styles.textDataMusic}>
         <Text
           style={[
             styles.text,
-            { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
+            { fontSize: 20, fontWeight: "bold", marginBottom: 20, color: colors.text},
           ]}
         >
           {currentTrack?.name ?? "Desconhecida"}
         </Text>
-        <Text style={[styles.text, { fontSize: 16 }]}>
+        <Text style={[styles.text, { fontSize: 16, color: colors.textSecondary }]}>
           {currentTrack?.artist ?? "Desconhecido"}
         </Text>
       </View>
@@ -140,7 +138,7 @@ export default function Player() {
           <Ionicons
             name="list-outline"
             size={24}
-            color="#FFF"
+            color={colors.text}
             style={{ marginTop: 20, marginBottom: 20 }}
           />
         </TouchableOpacity>
@@ -148,7 +146,7 @@ export default function Player() {
           <Ionicons
             name={isFavorite ? "heart" : "heart-outline"}
             size={24}
-            color="#FFF"
+            color={colors.text}
             style={{ marginTop: 20, marginBottom: 20 }}
           />
         </TouchableOpacity>
@@ -156,52 +154,52 @@ export default function Player() {
       </View>
       <View style={styles.controlsContainer}>
         <TouchableOpacity>
-          <Ionicons name="repeat" size={24} color="#FFF" />
+          <Ionicons name="repeat" size={24} color={colors.text} />
         </TouchableOpacity>
 
         <View style={styles.controls}>
           <TouchableOpacity onPress={togglePreviousSong}>
-            <Ionicons name="play-skip-back" size={24} color="#FFF" />
+            <Ionicons name="play-skip-back" size={24} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity onPress={togglePlayPause}>
             <Ionicons
               name={isPlaying ? "pause-circle" : "play-circle"}
               size={70}
-              color="#FFF"
+              color={colors.text}
               style={{ marginHorizontal: 20 }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleNextSong}>
-            <Ionicons name="play-skip-forward" size={24} color="#FFF" />
+            <Ionicons name="play-skip-forward" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
-          <Ionicons name="shuffle" size={24} color="#FFF" />
+          <Ionicons name="shuffle" size={24} color={colors.text} />
         </TouchableOpacity>
       </View>
       <View style={[styles.sliderContainer, { gap: 15 }]}>
-        <Ionicons name="volume-low-outline" size={24} color="#FFF" />
+        <Ionicons name="volume-low-outline" size={24} color={colors.text} />
         <Slider
           style={styles.slider}
           minimumValue={0}
           maximumValue={1}
           value={volume}
           onValueChange={handleVolumeChange}
-          thumbTintColor="#435A88"
-          maximumTrackTintColor="#FFF"
-          minimumTrackTintColor="#435A88"
+          thumbTintColor={colors.primary}
+          maximumTrackTintColor={colors.primary}
+          minimumTrackTintColor={colors.primary}
         />
-        <Ionicons name="volume-high-outline" size={24} color="#FFF" />
+        <Ionicons name="volume-high-outline" size={24} color={colors.text} />
       </View>
       <TouchableOpacity
         onPress={() => router.push("/lyric")}
-        style={styles.touchableOpacity}
+        style={[styles.touchableOpacity, { backgroundColor: colors.primary }]}
       >
-        <Text style={{ color: "#FFF" }}>VER A LETRA</Text>
+        <Text style={{ color: colors.text }}>VER A LETRA</Text>
       </TouchableOpacity>
     </View>
   );
-}
+});
 const styles = StyleSheet.create({
   text: {
     color: "#FFF",
@@ -258,3 +256,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   }
 });
+export default Player;

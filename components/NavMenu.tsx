@@ -1,36 +1,38 @@
 import { View, StyleSheet, Platform } from "react-native";
+import { useThemeColors } from "@/hooks/useThemeColor";
 import NavMenuItem from "./NavMenuItem";
 
 export default function NavMenu() {
+  const colors = useThemeColors();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <NavMenuItem
-        icon={require("@/assets/icons/home.png")}
+        icon={"home"}
         text={"Início"}
         route="/(tabs)/home"
       />
       <NavMenuItem
-        icon={require("@/assets/icons/search.png")}
+        icon={"search"}
         text={"Explorar"}
         route="/(tabs)/explore"
       />
       <NavMenuItem
-        icon={require("@/assets/icons/music.png")}
+        icon={"musical-notes"}
         text={"Músicas"}
         route="/"
       />
       <NavMenuItem
-        icon={require("@/assets/icons/album.png")}
+        icon={"disc-sharp"}
         text={"Álbuns"}
         route="/(tabs)/albums"
       />
       <NavMenuItem
-        icon={require("@/assets/icons/artist.png")}
+        icon={"people"}
         text={"Artistas"}
         route="/(tabs)/artists"
       />
       <NavMenuItem
-        icon={require("@/assets/icons/playlist.png")}
+        icon={"play-circle-sharp"}
         text={"Playlists"}
         route="/(tabs)/playlists"
       />
@@ -42,7 +44,6 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    backgroundColor: "#3A3535",
     padding: 15,
     justifyContent: "space-around",
     paddingBottom: Platform.OS === "ios"? 25:15
