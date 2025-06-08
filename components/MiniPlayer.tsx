@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   BackHandler,
-  Platform
+  Platform,
 } from "react-native";
 import { useState, useEffect, useCallback } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,7 +18,8 @@ import Animated, {
   withRepeat,
   Easing,
 } from "react-native-reanimated";
-import { useCurrentTrack, 
+import {
+  useCurrentTrack,
   useIsPlaying,
   useTogglePlayPause,
   useTogglePreviousSong,
@@ -26,8 +27,8 @@ import { useCurrentTrack,
   usePosition,
   useDuration,
   useSeekTo,
-  useSetVolume
-  } from "@/store/playerSelectors";
+  useSetVolume,
+} from "@/store/playerSelectors";
 import { useRouter } from "expo-router";
 import { memo } from "react";
 import { usePathname } from "expo-router";
@@ -79,22 +80,22 @@ const MiniPlayer = memo(function MiniPlayer() {
       );
     }
   }, [textWidth]);
-   useEffect(() => {
-     const onBackPress = () => {
-       if (isExpanded) {
-         setIsExpanded(false);
-         return true;
-       }
-       return false;
-     };
+  useEffect(() => {
+    const onBackPress = () => {
+      if (isExpanded) {
+        setIsExpanded(false);
+        return true;
+      }
+      return false;
+    };
 
-     const backHandler = BackHandler.addEventListener(
-       "hardwareBackPress",
-       onBackPress
-     );
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onBackPress
+    );
 
-     return () => backHandler.remove();
-   }, [isExpanded]);
+    return () => backHandler.remove();
+  }, [isExpanded]);
 
   const handleSeek = useCallback(
     async (value: number) => {
@@ -106,12 +107,10 @@ const MiniPlayer = memo(function MiniPlayer() {
   //   setVolumeState(value);
   //   setVolume(value);
   // };
-  const handleVolumeChange = useCallback(
-    (value: number) => {
-      setVolumeState(value);
-      setVolume(value);
-    },[]
-  );
+  const handleVolumeChange = useCallback((value: number) => {
+    setVolumeState(value);
+    setVolume(value);
+  }, []);
   const removeFavoriteMusic = async (musicId: string) => {
     const db = await database;
     await db.removeFavoriteMusic(musicId);
@@ -139,49 +138,59 @@ const MiniPlayer = memo(function MiniPlayer() {
     }
   };
 
-  if (!currentTrack || pathname === "/player" || pathname === "/lyric") return null;
-  if (!isExpanded){
+  if (!currentTrack || pathname === "/player" || pathname === "/lyric")
+    return null;
+  if (!isExpanded) {
     return (
-      <TouchableOpacity style={[styles.container, {backgroundColor: colors.surface}]} onPress={handleToggle}>
-      <View
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#c1c1c1",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 5,
-          marginRight: 10,
-          marginLeft: 5,
-        }}
+      <TouchableOpacity
+        style={[styles.container, { backgroundColor: colors.surface }]}
+        onPress={handleToggle}
       >
-        <Image
-          source={currentTrack.image ? { uri: currentTrack.image } : defaultSongIcon}
-          style={{ width: currentTrack.image ? "100%" : 25, height: currentTrack.image ? "100%" : 25, borderRadius: 5 }}
-        />
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text
-          style={[styles.title, { color: colors.text }]}
-          onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            backgroundColor: "#c1c1c1",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 5,
+            marginRight: 10,
+            marginLeft: 5,
+          }}
         >
-          {currentTrack.name}
-        </Text>
-        <Text style={[styles.artist, { color: colors.textSecondary }]}>
-          {currentTrack.artist ?? "Artista desconhecido"}
-        </Text>
-      </View>
-      <View style={styles.buttons}>
-        <TouchableOpacity onPress={togglePlayPause}>
-          <Ionicons
-            name={isPlaying ? "pause" : "play"}
-            size={30}
-            color={colors.text}
+          <Image
+            source={
+              currentTrack.image ? { uri: currentTrack.image } : defaultSongIcon
+            }
+            style={{
+              width: currentTrack.image ? "100%" : 25,
+              height: currentTrack.image ? "100%" : 25,
+              borderRadius: 5,
+            }}
           />
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={[styles.title, { color: colors.text }]}
+            onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
+          >
+            {currentTrack.name}
+          </Text>
+          <Text style={[styles.artist, { color: colors.textSecondary }]}>
+            {currentTrack.artist ?? "Artista desconhecido"}
+          </Text>
+        </View>
+        <View style={styles.buttons}>
+          <TouchableOpacity onPress={togglePlayPause}>
+            <Ionicons
+              name={isPlaying ? "pause" : "play"}
+              size={30}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
   }
   return (
     <View
@@ -199,10 +208,14 @@ const MiniPlayer = memo(function MiniPlayer() {
           }}
         />
       </View>
-      {Platform.OS === "ios" && <TouchableOpacity onPress={handleToggle} style={{position: "absolute", top: 30, right: 10}}>
-        <Ionicons name="chevron-down" size={30} color={colors.text} />
-      </TouchableOpacity>
-      }
+      {Platform.OS === "ios" && (
+        <TouchableOpacity
+          onPress={handleToggle}
+          style={{ position: "absolute", top: 30, right: 10 }}
+        >
+          <Ionicons name="chevron-down" size={30} color={colors.text} />
+        </TouchableOpacity>
+      )}
       <View
         style={[
           styles.sliderContainer,

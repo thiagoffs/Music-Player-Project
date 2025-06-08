@@ -3,20 +3,17 @@ import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import { useMusics } from "@/Context/musicContext";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import * as MediaLibrary from "expo-media-library";
-import type { Asset } from "expo-media-library";
-import Music from "@/components/Music";
 import Header from "@/components/Header";
 import { initializeDatabase } from "@/database/initializeDatabase";
 import { useDatabase, type MusicInfo } from "@/database/useDatabase";
-
-import { usePlayTrack } from "@/store/playerSelectors";
+import { LocalMusicIcon } from "@/components/Music";
+import { Track } from "@/store/playerStore";;
 
 export default function Index() {
   const { musics, setMusics } = useMusics();
   const [responsePermissions, requestPermissions] = MediaLibrary.usePermissions();
   const database = useDatabase();
   const colors = useThemeColors();
-  const playTrack = usePlayTrack();
 
   const getPermissions = async () => {
     if(responsePermissions?.status !== "granted"){
@@ -60,24 +57,27 @@ export default function Index() {
     getMusics();
   }, []);
 
+  const tracks: Track[] =
+    musics?.assets.map((asset) => ({
+      id: asset.id,
+      uri: asset.uri,
+      name: asset.filename.split(".")[0],
+      artist: "Desconhecido(a)",
+    })) ?? [];
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
      <Header/>
       <View style={{ width: "100%", height: "100%"}}>        
         <FlatList
-          data = { musics?.assets }
-          keyExtractor={ infoItem => infoItem.id }
-          renderItem ={ (infoItem) => 
-          <Music  
-              mode = "local"           
-              url={ require("../../assets/icons/default-song.png") } 
-              name = {infoItem.item.filename} 
-              id = {infoItem.item.id}
-              path = { infoItem.item.uri }
-              artist = "Desconhecido(a)" 
-              colors = {colors}  
-              onPress = {() => playTrack(infoItem.item, musics?.assets as Asset[])}           
-            />          
+          data = { tracks }
+          keyExtractor={ item => item.id }
+          renderItem ={({item }) => 
+          <LocalMusicIcon 
+            infoItem={item} 
+            playlist={tracks} 
+            colors={colors}     
+          />     
           }
         />        
       </View>

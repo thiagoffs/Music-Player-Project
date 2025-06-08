@@ -7,7 +7,7 @@ import axios from "axios";
 export type Track = {
   id: string;
   uri: string;
-  name?: string;
+  name?: string | undefined;
   artist?: string;
   image?: string;
 };
@@ -60,7 +60,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     });
 
     soundRef = sound;
-    set({ currentTrack: track, isPlaying: true });
+    set({ currentTrack: track, isPlaying: true, playlist: newPlaylist });
 
     if (track.id) {
       const exists = await db.existsDataOnRecentPlays(track.id);
@@ -99,7 +99,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   toggleNextSong: async () => {
     const { playlist, currentIndex, playTrack } = get();
+    // console.log("Playlist", playlist);
+    // console.log("Current Index", currentIndex);
+    // console.log("Tamanho da Playlist", playlist.length);
+    // console.log("Próxima Música", playlist[currentIndex + 1]);
+    // console.log("PlayTrack", playTrack);
     if (playlist.length === 0 || currentIndex >= playlist.length - 1) return;
+    // console.log("Tocando próxima música:", playlist[currentIndex + 1]);
     await playTrack(playlist[currentIndex + 1], playlist);
   },
 

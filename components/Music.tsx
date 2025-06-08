@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { usePlayTrack } from "@/store/playerSelectors";
+import { Track } from "@/store/playerStore";
 
 type Props = {
     id?: string;
@@ -9,29 +10,17 @@ type Props = {
     url: ImageSourcePropType;
     mode?: "horizontal" | "vertical" | "grid" | "local";
     path?: string;
-    onPress?: () => void;
     colors?: any
 };
 
-type Track = {
-  id: string,
-  uri: string;
-  fileName?: string;
-  artist?: string;
-  image?: string;
-  name: string;
-};
-
-export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress, colors }: Props) {
+export default function Music({ name, url, artist, mode = "horizontal", path, id, colors }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} />
-    } else {
-        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
-    }
+    } 
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
     return (
@@ -87,25 +76,13 @@ function GridMusicIcon({ name, url, artist, path, id, colors }: Props) {
 
     );
 }
-function LocalMusicIcon({ name, url, artist, path, id, colors }: Props) {
-    const formattedName = name?.split(".");
+export function LocalMusicIcon({ infoItem, playlist, colors,  }: { infoItem?: Track; playlist?: Track[]; colors?: any }) {
+    const name = infoItem?.name?.split(".")[0];
     const playTrack = usePlayTrack();
     return (
         <TouchableOpacity
         onPress={async () => {
-            const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
-            playTrack(
-              { id: id ?? "", uri: path ?? "", name: formattedName![0], artist },
-              assets.assets.map((asset) => ({
-                id: asset.id,
-                uri: asset.uri,
-                name: asset.filename? asset.filename.split(".")[0] : "Unknown",
-                url: asset.albumId
-                  ? `album-${asset.albumId}`
-                  : require("../assets/icons/default-song.png"),
-                image: require("../assets/icons/default-song.png"),
-              })) as Track[]
-            );
+            playTrack(infoItem!, playlist);
         }}
           style={{
             width: "100%",
@@ -118,11 +95,11 @@ function LocalMusicIcon({ name, url, artist, path, id, colors }: Props) {
           }}
         >
           <View style={{ width: 40, height: 40, backgroundColor: "#c1c1c1", alignItems: "center", justifyContent: "center", borderRadius: 5 }}>
-            <Image source={url} style={{ width: 25, height: 25 }} />
+            <Image source={infoItem?.image ?? require("@/assets/icons/default-song.png")} style={{ width: 25, height: 25 }} />
           </View>
           <View style={{ flexDirection: "column", paddingLeft: 10,flex:1 }}>
-            <Text style={[styles.localTittle, {color: colors.text}]}>{formattedName![0]}</Text>
-            <Text style={[styles.localArtistName, {color: colors.textSecondary}]}>{artist}</Text>
+            <Text style={[styles.localTittle, {color: colors.text}]}>{name}</Text>
+            <Text style={[styles.localArtistName, {color: colors.textSecondary}]}>{infoItem?.artist}</Text>
           </View>
         </TouchableOpacity>
     );
