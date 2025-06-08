@@ -21,7 +21,7 @@ export async function useDatabase() {
 
   async function queryRecentPlaysMusics() {
     const queryWithJoin =
-      "SELECT all_musics.id, all_musics.name, all_musics.artist, all_musics.url, all_musics.path," +
+      "SELECT DISTINCT all_musics.id, all_musics.name, all_musics.artist, all_musics.url, all_musics.path," +
       "all_musics.duration FROM recent_plays LEFT JOIN all_musics ON recent_plays.id_music = all_musics.id ORDER BY recent_plays.quantity_plays DESC";
     try {
       const response = await database.getAllAsync<MusicInfo>(queryWithJoin);

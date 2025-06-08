@@ -30,7 +30,6 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-
         return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} onPress={onPress}/>
     } else {
         return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
@@ -94,6 +93,7 @@ function GridMusicIcon({ name, url, artist, path, id, colors, onPress }: Props) 
                 <Text style={[styles.songSubTitleGrid, { color: color.textSecondary }]} numberOfLines={1}>
                     {artist}
                 </Text>
+
             </View>
         </TouchableOpacity>
     );
