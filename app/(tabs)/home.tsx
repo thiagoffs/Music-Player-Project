@@ -77,7 +77,7 @@ export default function Home() {
           {recentPlays?.length === 0 ? (
             <View style={styles.recents}>
               <View style={styles.recentesTitle}>
-                <Text style={styles.recentsTitleText}>
+                <Text style={[styles.recentsTitleText, { color: colors.text }]}>
                   Recomendadas para Você
                 </Text>
               </View>
@@ -94,11 +94,12 @@ export default function Home() {
                       name={value.name}
                       artist={value.artist ?? "Desconhecido(a)"}
                       url={
-                        value.url ??
+                        value.url ??  
                         require("../../assets/icons/default-song.png")
                       }
                       path={value.path}
                       colors={colors}
+                      id={value.id}
                     />
                   );
                 })}
@@ -124,12 +125,13 @@ export default function Home() {
                         mode="grid"
                         name={value.name}
                         artist={value.artist ?? "Desconhecido(a)"}
-                        url={
+                        url={ 
                           value.url ??
                           require("../../assets/icons/default-song.png")
                         }
                         path={value.path}
                         colors={colors}
+                        id={value.id}
                       />
                     );
                   }
@@ -156,10 +158,13 @@ export default function Home() {
                       mode="grid"
                       name={value.name}
                       artist={value.artist ?? "Desconhecido(a)"}
-                      url={{
-                        uri: value.url ?? "https://placecats.com/300/300",
-                      }}
+                      url={ 
+                          value.url ??
+                          require("../../assets/icons/default-song.png")
+                        }
                       path={value.path}
+                      colors={colors}
+                      id={value.id}
                     />
                   );
                 }
@@ -215,8 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 30,
   },
-  recentsTitleText: {
-    color: "#fff",
+  recentsTitleText: {    
     fontSize: 24,
   },
   buttonRadio: {

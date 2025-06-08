@@ -28,7 +28,7 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-        return <GridMusicIcon name={name} artist={artist} url={url} colors={colors} />
+        return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} />
     } else {
         return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
     }
@@ -55,9 +55,27 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
 
     );
 }
-function GridMusicIcon({ name, url, artist, colors }: { name?: string; url: ImageSourcePropType; artist?: string, colors: any }) {
+function GridMusicIcon({ name, url, artist, path, id, colors }: Props) {
+    const playTrack = usePlayTrack();
     return (
-        <TouchableOpacity style={styles.songGrid}>
+        <TouchableOpacity 
+            onPress={async () => {
+                    const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+                    playTrack(
+                    { id: id ?? "", uri: path ?? "", name: name!.split(".")[0], artist },
+                    assets.assets.map((asset) => ({
+                        id: asset.id,
+                        uri: asset.uri,
+                        name: asset.filename? asset.filename.split(".")[0] : "Unknown",
+                        url: asset.albumId
+                        ? `album-${asset.albumId}`
+                        : require("../assets/icons/default-song.png"),
+                        image: require("../assets/icons/default-song.png"),
+                    })) as Track[]
+                    );
+            }}
+            style={styles.songGrid}
+        >
             <View style={{flex:1,  alignItems:"center"}}>
                 <View style ={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />
