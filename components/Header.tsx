@@ -10,28 +10,29 @@ const Header = () => {
     const pathname = usePathname();
     return (
         <View style={[styles.header, { backgroundColor: colors.background }]}>
-            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/searchMusicLocal")}>
+            {pathname !== "/explore" && pathname != "/choosePlaylist" && <TouchableOpacity onPress={() => router.push("/searchMusicLocal")}>
                 <Ionicons name="search" size={24} color={colors.text} />
             </TouchableOpacity>
             }
             <Logo />
-            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/config")}>
+            {pathname !== "/explore" && pathname != "/choosePlaylist" && <TouchableOpacity onPress={() => router.push("/config")}>
                 <Ionicons name="settings-sharp" size={24} color={colors.text} />
-            </TouchableOpacity>
-            }
-        </View>
-    );
-};
-export default Header;
 
-const styles = StyleSheet.create({
-    header: {
-        width: "90%",
-        marginTop: 15,
-        padding: 2,
-        justifyContent: "space-between",
-        flexDirection: "row",
-        alignItems: "center",
-        alignContent: "center",
+                    </TouchableOpacity>
+                    }
+                </View>
+                );
+};
+                export default Header;
+
+                const styles = StyleSheet.create({
+                    header: {
+                    width: "90%",
+                marginTop: 15,
+                padding: 2,
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "center",
+                alignContent: "center",
     },
 });
