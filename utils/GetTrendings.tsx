@@ -2,6 +2,7 @@ import { usePlaySelectedTrack } from "@/store/playerSelectors";
 import { Image, Text, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import SkeletonLoader from "@/components/SkeletonLoader";
 
 type TrendingSongsProps = {
   type: "trending" | "monthly" | "yearly" | "allTime" | "playlists" | "artists";
@@ -59,10 +60,10 @@ export default function GetTrendingSongs({ type, colors }: TrendingSongsProps) {
 
   if (loading) {
     return (
-      <View style={{ padding: 20, alignItems: "center" }}>
-        <Text style={{ fontSize: 16, color: colors.text }}>
-          Carregando músicas...
-        </Text>
+      <View style={{flexDirection: "row", padding: 0, alignItems: "center", justifyContent: "center"}}>
+        <SkeletonLoader />
+        <SkeletonLoader />
+        <SkeletonLoader />
       </View>
     );
   }
