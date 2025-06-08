@@ -33,14 +33,15 @@ export default function PageList() {
     const { type } = useLocalSearchParams();
     const router = useRouter();
     const db = useDatabase();
+    const colors = useThemeColors();
 
     const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     if (typeof type !== "string" || !validTypes.includes(type as TypeKey)) {
         return (
-            <SafeAreaView style={styles.container}>
-                <Text style={{ color: "white", textAlign: "center", marginTop: 20 }}>
+            <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+                <Text style={{ color: colors.text, textAlign: "center", marginTop: 20 }}>
                     Tipo inválido ou não encontrado.
                 </Text>
             </SafeAreaView>
@@ -95,21 +96,21 @@ export default function PageList() {
         fetchData();
     }, [items]);
 
-  const colors = useThemeColors();
 
     return (
-  <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
             <Header />
             <View style={styles.content}>
                 <View style={styles.containerTitlePage}>
                     <TouchableOpacity onPress={() => router.push("../home")}>
-                        <AntDesign name="arrowleft" size={29} color="white" />
+                        <AntDesign name="arrowleft" size={29} color={colors.text} />
                     </TouchableOpacity>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
                 </View>
 
                 {loading ? (
-                    <ActivityIndicator size="large" color="#fff" style={{ marginTop: 40 }} />
+                    <ActivityIndicator size="large" color={ colors.text } style={{ marginTop: 40 }} />
                 ) : (
                     <FlatList
                         data={items}
@@ -127,6 +128,8 @@ export default function PageList() {
                                     artist={item.artist}
                                     url={item.url}
                                     path={item.path}
+                                    colors={colors}
+                                    id={item.id}
                                 />
                             </View>
                         )}
@@ -138,8 +141,7 @@ export default function PageList() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#2F2A2A",
+    container: {        
         flex: 1,
         alignItems: "center",
         paddingTop: 20,
@@ -154,8 +156,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-        fontSize: 20,
-        color: "#fff",
+        fontSize: 20,        
         paddingHorizontal: 20,
     },
     containerViewFlatList: {

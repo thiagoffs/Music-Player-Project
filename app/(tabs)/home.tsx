@@ -13,7 +13,6 @@ import { usePlayTrack } from "@/store/playerSelectors";
 
 
 
-
 export default function Home() {
   const [recentPlays, setRecentPlays] = useState<MusicInfo[] | null>([]);
   const [suggestion, setSuggestion] = useState<MusicInfo[] | null>([]);
@@ -115,8 +114,9 @@ export default function Home() {
           {recentPlays?.length === 0 ? (
             <View style={styles.recents}>
               <View style={styles.recentesTitle}>
-                <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>
-              </View>
+                <Text style={[styles.recentsTitleText, { color: colors.text }]}>
+                  Recomendadas para Você</Text>
+              </View >
               <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
                 {suggestion?.map((value, index) => (
                   <Music
@@ -163,9 +163,11 @@ export default function Home() {
                         },)}
                   />
                 ))}
+
               </ScrollView>
             </View>
-          )}
+          )
+          }
 
           <View style={styles.favorite}>
             <HomeSection title="Favoritas" route={"/list/favorites" as RelativePathString} colors={colors} />
@@ -189,6 +191,7 @@ export default function Home() {
                       },)}
                 />
               ))}
+
             </ScrollView>
           </View>
 
@@ -222,14 +225,14 @@ export default function Home() {
                   url={require("../../assets/icons/default-song.png")}
                   path={`/playlist/${playlist.id}`}
                   onPress={() => togglePlaylist(playlist.id)}
-                  
+
                 />
               ))}
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </View >
+      </ScrollView >
+    </SafeAreaView >
   );
 
 }
@@ -270,7 +273,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   recentsTitleText: {
-    color: "#fff",
     fontSize: 24,
   },
   buttonRadio: {
