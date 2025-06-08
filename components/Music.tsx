@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
 import * as MediaLibrary from "expo-media-library";
+import { usePlayTrack } from "@/store/playerSelectors";
 
 type Props = {
-    key?: string;
+    id?: string;
     name?: string;
     artist?: string;
     url: ImageSourcePropType;
@@ -13,6 +13,7 @@ type Props = {
 };
 
 type Track = {
+  id: string,
   uri: string;
   fileName?: string;
   artist?: string;
@@ -20,7 +21,7 @@ type Track = {
   name: string;
 };
 
-export default function Music({ name, url, artist, mode = "horizontal", path, onPress }: Props) {
+export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
@@ -28,7 +29,7 @@ export default function Music({ name, url, artist, mode = "horizontal", path, on
     } else if (mode == "grid") {
         return <GridMusicIcon name={name} artist={artist} url={url} />
     } else {
-        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} onPress={onPress} />
+        return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} />
     }
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -57,24 +58,27 @@ function GridMusicIcon({ name, url, artist }: { name?: string; url: ImageSourceP
     return (
         <TouchableOpacity style={styles.songGrid}>
             <View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
-            <Image source={url} style={styles.styleFotoGrid} />
-                <Text style={styles.songTitleGrid}>{name}</Text>
-                <Text style={styles.songSubTitleGrid}>{artist}</Text>
+                <View style ={styles.fotoGridContainer}>
+                    <Image source={url} style={styles.styleFotoGrid} />
+                </View>
+                <Text style={styles.songTitleGrid} numberOfLines={3}>{name?.split(".")[0]}</Text>
+                <Text style={styles.songSubTitleGrid} numberOfLines={1}>{artist}</Text>
             </View>
         </TouchableOpacity>
 
     );
 }
-function LocalMusicIcon({ name, url, artist, path }: Props) {
+function LocalMusicIcon({ name, url, artist, path, id }: Props) {
     const formattedName = name?.split(".");
-    const { playTrack } = usePlayer();
+    const playTrack = usePlayTrack();
     return (
         <TouchableOpacity
         onPress={async () => {
             const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
             playTrack(
-              { uri: path ?? "", name: formattedName![0], artist },
+              { id: id ?? "", uri: path ?? "", name: formattedName![0], artist },
               assets.assets.map((asset) => ({
+                id: asset.id,
                 uri: asset.uri,
                 name: asset.filename? asset.filename.split(".")[0] : "Unknown",
                 url: asset.albumId
@@ -97,7 +101,7 @@ function LocalMusicIcon({ name, url, artist, path }: Props) {
           <View style={{ width: 40, height: 40, backgroundColor: "#c1c1c1", alignItems: "center", justifyContent: "center", borderRadius: 5 }}>
             <Image source={url} style={{ width: 25, height: 25 }} />
           </View>
-          <View style={{ flexDirection: "column", paddingLeft: 10 }}>
+          <View style={{ flexDirection: "column", paddingLeft: 10,flex:1 }}>
             <Text style={styles.localTittle}>{formattedName![0]}</Text>
             <Text style={styles.localArtistName}>{artist}</Text>
           </View>
@@ -113,13 +117,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginVertical: 10
     },
-    styleFotoGrid: {
+    fotoGridContainer: {
+        alignItems: "center",
+        justifyContent: "center",
         width: "100%",
         height: 122,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "white",
-        resizeMode:"cover"
+        backgroundColor: "#C1C1C1",
+        borderRadius: 35,
+        marginBottom: 10,
+        boxShadow: "0px 4px 4px #171C27",
+    },
+    styleFotoGrid: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "center",    
     },
     songHorizontal: {
         marginVertical: 10
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
     songTitleGrid: {
         fontSize: 20,
         color: "white",
-        textAlign:"center"
+        textAlign:"center",
     },
     songSubTitleGrid: {
         fontSize: 13,

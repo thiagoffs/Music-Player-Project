@@ -1,17 +1,20 @@
-import { useRouter } from "expo-router";
-import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native";
+import { useRouter, usePathname } from "expo-router";
+import { TouchableOpacity, View, StyleSheet, Image } from "react-native";
 import Logo from "../components/Logo";
 const Header = () => {
     const router = useRouter();
+    const pathname = usePathname();
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.push('/explore')}>
+            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/searchMusicLocal")}>
                 <Image source={require("../assets/icons/search_header.png")} />
             </TouchableOpacity>
+            }
             <Logo/>
-            <TouchableOpacity onPress={() => router.push("/config")}>
+            {pathname !== "/explore" && <TouchableOpacity onPress={() => router.push("/config")}>
                 <Image source={require("../assets/icons/settings.png")} />
             </TouchableOpacity>
+            }
         </View>
     );
 };
@@ -24,10 +27,11 @@ const styles = StyleSheet.create({
         padding: 2,
         justifyContent: "space-between",
         flexDirection: "row",
+        alignItems: "center",
+        alignContent: "center",
     },
     recentsTitleText: {
         color: "#fff",
         fontSize: 24,
-
     },
 });

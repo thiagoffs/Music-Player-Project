@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { usePlayer } from "@/Context/playerContext";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import defaultSongIcon from "@/assets/icons/default-song.png";
@@ -17,18 +16,29 @@ import Animated, {
   withRepeat,
   Easing,
 } from "react-native-reanimated";
+import { useCurrentTrack, 
+  useIsPlaying,
+  useTogglePlayPause,
+  useTogglePreviousSong,
+  useToggleNextSong
+  } from "@/store/playerSelectors";
 import { useRouter } from "expo-router";
 import { usePathname } from "expo-router";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 export default function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlayPause, togglePreviousSong, toggleNextSong } = usePlayer();
   const translateX = useSharedValue(0);
   const [textWidth, setTextWidth] = useState(0);
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
+  const currentTrack = useCurrentTrack();
+  const isPlaying = useIsPlaying();
+  const togglePlayPause = useTogglePlayPause();
+  const togglePreviousSong = useTogglePreviousSong();
+  const toggleNextSong = useToggleNextSong();
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -47,8 +57,7 @@ export default function MiniPlayer() {
     }
   }, [textWidth]);
 
-  if (!currentTrack || pathname === "/player") return null;
-
+  if (!currentTrack || pathname === "/player" || pathname === "/lyric") return null;
   return (
     <TouchableOpacity style={styles.container} onPress={() => router.push("/player")}>
       <View
@@ -64,8 +73,8 @@ export default function MiniPlayer() {
         }}
       >
         <Image
-          source={currentTrack.image ?? defaultSongIcon}
-          style={{ width: 25, height: 25 }}
+          source={currentTrack.image ? { uri: currentTrack.image } : defaultSongIcon}
+          style={{ width: currentTrack.image ? "100%" : 25, height: currentTrack.image ? "100%" : 25, borderRadius: 5 }}
         />
       </View>
       <View style={{ flex: 1 }}>
