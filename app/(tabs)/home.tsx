@@ -9,6 +9,8 @@ import ModalPlaylistDetails from '@/components/ModalPlaylistDetails';
 import HomeSection from "@/components/HomeSection";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import { Ionicons } from "@expo/vector-icons";
+import { usePlayTrack } from "@/store/playerSelectors";
+
 
 
 
@@ -24,6 +26,8 @@ export default function Home() {
   const colors = useThemeColors();
   const router = useRouter();
   const database = useDatabase();
+
+  const playTrack = usePlayTrack();
 
 
   const suggestionSongs = async () => {
@@ -84,124 +88,152 @@ export default function Home() {
   }, [recentSongs, favoriteSongs, loadPlaylists]);
 
   return (
-  <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-    <Header />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Header />
 
-    <ScrollView
-      contentContainerStyle={{ paddingBottom: "10%" }}
-      style={styles.scroll}
-    >
-      <ModalPlaylistDetails
-        visible={isModalVisible}
-        onClose={() => setModalVisible(false)}
-        playlistMusics={playlistMusics}
-      />
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: "10%" }}
+        style={styles.scroll}
+      >
+        <ModalPlaylistDetails
+          visible={isModalVisible}
+          onClose={() => setModalVisible(false)}
+          playlistMusics={playlistMusics}
+        />
 
-      <View style={{ gap: 17 }}>
-        <View style={styles.buttonRadio}>
-          <Ionicons name="radio-outline" size={60} color={colors.text} />
-          <TouchableOpacity
-            onPress={() => router.push("/radio")}
-            style={[styles.radioButton, { backgroundColor: colors.primary }]}
-          >
-            <Text style={styles.text}>OUVIR RÁDIO</Text>
-          </TouchableOpacity>
-        </View>
-
-        {recentPlays?.length === 0 ? (
-          <View style={styles.recents}>
-            <View style={styles.recentesTitle}>
-              <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>
-            </View>
-            <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-              {suggestion?.map((value, index) => (
-                <Music
-                  key={value.path ?? `${value.name} - ${index}`}
-                  mode="grid"
-                  name={value.name}
-                  artist={value.artist ?? "Desconhecido(a)"}
-                  url={value.url ?? require("../../assets/icons/default-song.png")}
-                  path={value.path}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        ) : (
-          <View style={styles.recents}>
-           <HomeSection title="Tocadas Recentemente" route={"/list/recent" as RelativePathString}  colors={colors} />
-
-            <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-              {recentPlays?.slice(0, 4).map((value, index) => (
-                <Music
-                  key={value.path ?? `${value.name} - ${index}`}
-                  mode="grid"
-                  name={value.name}
-                  artist={value.artist ?? "Desconhecido(a)"}
-                  url={value.url ?? require("../../assets/icons/default-song.png")}
-                  path={value.path}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        <View style={styles.favorite}>
-         <HomeSection title="Favoritas" route={"/list/favorites" as RelativePathString} colors={colors} />
-          <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
-            {favorite?.slice(0, 4).map((value, index) => (
-              <Music
-                key={value.path ?? `${value.name} - ${index}`}
-                mode="grid"
-                name={value.name}
-                artist={value.artist ?? "Desconhecido(a)"}
-                url={value.url ?? require("../../assets/icons/default-song.png")}
-                path={value.path}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        <View>
-          <View style={styles.recentesTitle}>
-            <Text style={styles.recentsTitleText}>Álbuns</Text>
-            <TouchableOpacity onPress={() => router.push("/list/albums")}>
-              <AntDesign name="arrowright" size={29} color="white" />
+        <View style={{ gap: 17 }}>
+          <View style={styles.buttonRadio}>
+            <Ionicons name="radio-outline" size={60} color={colors.text} />
+            <TouchableOpacity
+              onPress={() => router.push("/radio")}
+              style={[styles.radioButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={styles.text}>OUVIR RÁDIO</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.albuns}>
-            <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} key="example7" path="/file/music/example.mp3" />
-            <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} key="example8" path="/file/music/example.mp3" />
-            <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} key="example9" path="/file/music/example.mp3" />
-            <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} key="example10" path="/file/music/example.mp3" />
+          {recentPlays?.length === 0 ? (
+            <View style={styles.recents}>
+              <View style={styles.recentesTitle}>
+                <Text style={styles.recentsTitleText}>Recomendadas para Você</Text>
+              </View>
+              <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                {suggestion?.map((value, index) => (
+                  <Music
+                    key={value.path ?? `${value.name} - ${index}`}
+                    mode="grid"
+                    name={value.name}
+                    artist={value.artist ?? "Desconhecido(a)"}
+                    url={value.url ?? require("../../assets/icons/default-song.png")}
+                    path={value.path}
+                    id={value.id}
+                    onPress={() =>
+                      playTrack(
+                        {
+                          id: value.id,
+                          name: value.name,
+                          uri: value.path ?? "",
+                          artist: value.artist,
+                        },)}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          ) : (
+            <View style={styles.recents}>
+              <HomeSection title="Tocadas Recentemente" route={"/list/recent" as RelativePathString} colors={colors} />
+
+              <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+                {recentPlays?.slice(0, 4).map((value, index) => (
+                  <Music
+                    key={value.path ?? `${value.name} - ${index}`}
+                    mode="grid"
+                    name={value.name}
+                    artist={value.artist ?? "Desconhecido(a)"}
+                    url={value.url ?? require("../../assets/icons/default-song.png")}
+                    path={value.path}
+                    id={value.id}
+                    onPress={() =>
+                      playTrack(
+                        {
+                          id: value.id,
+                          name: value.name,
+                          uri: value.path ?? "",
+                          artist: value.artist,
+                        },)}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          <View style={styles.favorite}>
+            <HomeSection title="Favoritas" route={"/list/favorites" as RelativePathString} colors={colors} />
+            <ScrollView horizontal contentContainerStyle={styles.listMusicCarrosel} showsHorizontalScrollIndicator={false}>
+              {favorite?.slice(0, 4).map((value, index) => (
+                <Music
+                  key={value.path ?? `${value.name} - ${index}`}
+                  mode="grid"
+                  name={value.name}
+                  artist={value.artist ?? "Desconhecido(a)"}
+                  url={value.url ?? require("../../assets/icons/default-song.png")}
+                  path={value.path}
+                  id={value.id}
+                  onPress={() =>
+                    playTrack(
+                      {
+                        id: value.id,
+                        name: value.name,
+                        uri: value.path ?? "",
+                        artist: value.artist,
+                      },)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+
+          <View>
+            <View style={styles.recentesTitle}>
+              <Text style={styles.recentsTitleText}>Álbuns</Text>
+              <TouchableOpacity onPress={() => router.push("/list/albums")}>
+                <AntDesign name="arrowright" size={29} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.albuns}>
+              <Music mode='grid' name='Plastic Beach' artist='Gorillaz' url={{ uri: "https://placecats.com/300/300" }} key="example7" path="/file/music/example.mp3" />
+              <Music mode='grid' name='True Defiance' artist='Demon Hunter' url={{ uri: "https://placecats.com/300/300" }} key="example8" path="/file/music/example.mp3" />
+              <Music mode='grid' name='Bis Jovem Guarda' artist='Paulo Sergio' url={{ uri: "https://placecats.com/300/300" }} key="example9" path="/file/music/example.mp3" />
+              <Music mode='grid' name='20 Super Sucessos' artist='José Ribeiro' url={{ uri: "https://placecats.com/300/300" }} key="example10" path="/file/music/example.mp3" />
+            </View>
+          </View>
+
+          <View>
+            <HomeSection title="PlayLists" route={"/playlists" as RelativePathString} colors={colors} />
+
+
+            <View style={styles.albuns}>
+              {playlists?.slice(0, 4).map((playlist) => (
+                <Music
+                  key={playlist.id}
+                  mode="grid"
+                  name={playlist.name}
+                  artist="Minha Playlist"
+                  url={require("../../assets/icons/default-song.png")}
+                  path={`/playlist/${playlist.id}`}
+                  onPress={() => togglePlaylist(playlist.id)}
+                  
+                />
+              ))}
+            </View>
           </View>
         </View>
-
-        <View>
-          <HomeSection title="PlayLists" route={"/playlists" as RelativePathString}  colors={colors} />
-
-
-          <View style={styles.albuns}>
-            {playlists?.slice(0, 4).map((playlist) => (
-              <Music
-                key={playlist.id}
-                mode="grid"
-                name={playlist.name}
-                artist="Minha Playlist"
-                url={require("../../assets/icons/default-song.png")}
-                path={`/playlist/${playlist.id}`}
-                onPress={() => togglePlaylist(playlist.id)}
-              />
-            ))}
-          </View>
-        </View>
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
+      </ScrollView>
+    </SafeAreaView>
+  );
 
 }
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",

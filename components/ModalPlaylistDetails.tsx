@@ -3,6 +3,8 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'rea
 import { MusicInfo } from '@/database/useDatabase';
 import Music from './Music';
 import { Ionicons } from '@expo/vector-icons';
+import { usePlayTrack } from "@/store/playerSelectors";
+
 
 interface ModalPlaylistProps {
     visible: boolean;
@@ -11,6 +13,8 @@ interface ModalPlaylistProps {
 }
 
 export default function ModalPlaylistDetails({ visible, onClose, playlistMusics }: ModalPlaylistProps) {
+    const playTrack = usePlayTrack();
+
     return (
         <Modal
             animationType="slide"
@@ -35,6 +39,15 @@ export default function ModalPlaylistDetails({ visible, onClose, playlistMusics 
                                 artist={music.artist ?? "Desconhecido(a)"}
                                 url={music.url ?? require("../assets/icons/default-song.png")}
                                 path={music.path}
+                                id={music.id}
+                                onPress={() =>
+                                    playTrack(
+                                        {
+                                            id: music.id,
+                                            name: music.name,
+                                            uri: music.path ?? "",
+                                            artist: music.artist,
+                                        },)}
                             />
                         ))}
                     </ScrollView>

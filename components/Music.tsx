@@ -30,7 +30,8 @@ export default function Music({ name, url, artist, mode = "horizontal", path, id
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-        return <GridMusicIcon name={name} artist={artist} url={url} onPress={onPress} />
+
+        return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} onPress={onPress}/>
     } else {
         return <LocalMusicIcon name={name} artist={artist} url={url} path={path} id={id} onPress={onPress} colors={colors} />
     }
@@ -57,21 +58,47 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
 
     );
 }
-function GridMusicIcon({ name, url, artist, onPress }: { name?: string; url: ImageSourcePropType; artist?: string; onPress?: () => void; }) {
-    const themeColors = useThemeColors();
+function GridMusicIcon({ name, url, artist, path, id, colors, onPress }: Props) {
+    const color = useThemeColors();
+    const playTrack = usePlayTrack();
+
+    const handlePress = async () => {
+        if (onPress) {
+            onPress();
+        } else {
+            const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+            playTrack(
+                { id: id ?? "", uri: path ?? "", name: name!.split(".")[0], artist },
+                assets.assets.map((asset) => ({
+                    id: asset.id,
+                    uri: asset.uri,
+                    name: asset.filename ? asset.filename.split(".")[0] : "Unknown",
+                    url: asset.albumId
+                        ? `album-${asset.albumId}`
+                        : require("../assets/icons/default-song.png"),
+                    image: require("../assets/icons/default-song.png"),
+                })) as Track[]
+            );
+        }
+    };
+
     return (
-        <TouchableOpacity style={styles.songGrid} onPress={onPress}>
-            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <TouchableOpacity onPress={handlePress} style={styles.songGrid}>
+            <View style={{ flex: 1, alignItems: "center" }}>
                 <View style={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />
                 </View>
-                <Text style={[styles.songTitleGrid, { color: themeColors.text }]} numberOfLines={3}>{name?.split(".")[0]}</Text>
-                <Text style={[styles.songSubTitleGrid, { color: themeColors.textSecondary }]} numberOfLines={1}>{artist}</Text>
+                <Text style={[styles.songTitleGrid, { color: color.text }]} numberOfLines={3}>
+                    {name?.split(".")[0]}
+                </Text>
+                <Text style={[styles.songSubTitleGrid, { color: color.textSecondary }]} numberOfLines={1}>
+                    {artist}
+                </Text>
             </View>
         </TouchableOpacity>
-
     );
 }
+
 function LocalMusicIcon({ name, url, artist, path, id, colors }: Props) {
     const formattedName = name?.split(".");
     const playTrack = usePlayTrack();
@@ -125,17 +152,16 @@ const styles = StyleSheet.create({
     fotoGridContainer: {
         alignItems: "center",
         justifyContent: "center",
-        width: "100%",
+        width: 147,
         height: 122,
         backgroundColor: "#C1C1C1",
-        borderRadius: 35,
+        borderRadius: 15,
         marginBottom: 10,
-        boxShadow: "0px 4px 4px #171C27",
     },
     styleFotoGrid: {
-        width: "100%",
-        height: "100%",
-        resizeMode: "center",
+        height: 90,
+        resizeMode: "center",    
+
     },
     songHorizontal: {
         marginVertical: 10

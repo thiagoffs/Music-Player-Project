@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { useCurrentTrack } from "@/store/playerSelectors";
 import { useDatabase } from "@/database/useDatabase";
+import { useThemeColors } from "@/hooks/useThemeColor";
 
 type PlaylistWithCount = {
     id: number;
@@ -26,6 +27,8 @@ export default function ChoosePlaylist() {
     const [playlists, setPlaylists] = useState<
         (PlaylistWithCount & { songCount: number })[]
     >([]);
+      const colors = useThemeColors();
+
 
     const loadPlaylists = async () => {
         const db = await database; 
@@ -68,14 +71,14 @@ export default function ChoosePlaylist() {
 
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Header />
                 <TouchableOpacity onPress={() => router.back()}>
-                    <Ionicons name="close" size={25} color="#fff" />
+                    <Ionicons name="close" size={25} color={colors.text} />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.title}>Adicionar à playlist </Text>
+            <Text style={[styles.title,{color:colors.text}]}>Adicionar à playlist </Text>
             <View style={{ flex: 1, width: "100%", padding: 10, gap: 1, alignItems: "center" }}>
                 <View>
                     <TouchableOpacity
