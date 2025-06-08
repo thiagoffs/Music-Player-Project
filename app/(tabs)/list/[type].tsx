@@ -98,6 +98,7 @@ export default function PageList() {
 
 
     return (
+
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
             <Header />
             <View style={styles.content}>

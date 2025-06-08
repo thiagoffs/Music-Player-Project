@@ -35,6 +35,7 @@ import { usePathname } from "expo-router";
 import { useThemeColors } from "@/hooks/useThemeColor";
 import Slider from "@react-native-community/slider";
 import { useDatabase } from "@/database/useDatabase";
+import { useFocusEffect } from "@react-navigation/native";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -88,7 +89,6 @@ const MiniPlayer = memo(function MiniPlayer() {
       }
       return false;
     };
-
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       onBackPress
@@ -96,6 +96,22 @@ const MiniPlayer = memo(function MiniPlayer() {
 
     return () => backHandler.remove();
   }, [isExpanded]);
+  
+
+useFocusEffect(
+  useCallback(() => {
+    const checkIfFavorite = async () => {
+      if (!currentTrack?.id) return;
+      const db = await database;
+      const isFav = await db.isFavoriteMusic(currentTrack.id);
+      setIsFavorite(isFav);
+    };
+
+    checkIfFavorite();
+  }, [database,currentTrack?.id])
+);
+
+
 
   const handleSeek = useCallback(
     async (value: number) => {
@@ -120,26 +136,24 @@ const MiniPlayer = memo(function MiniPlayer() {
     await db.addFavoriteMusic(musicId);
   }
 
-  const handleToggleFavorite = async () => {
-    if (!currentTrack?.id) return;
+const handleToggleFavorite = async () => {
+  if (!currentTrack?.id) return;
 
-    try {
-      if (isFavorite) {
-        await removeFavoriteMusic(currentTrack.id);
-        setIsFavorite(false);
-      } else {
-        await addFavoriteMusic(currentTrack.id);
-        setIsFavorite(true);
-      }
-      const db = await database;
-      const updatedFavorites = await db.queryFavoriteMusics();
-    } catch (err) {
-      console.error("Erro ao alternar favorito:", err);
+  try {
+    if (isFavorite) {
+      await removeFavoriteMusic(currentTrack.id);
+      setIsFavorite(false);
+    } else {
+      await addFavoriteMusic(currentTrack.id);
+      setIsFavorite(true); 
     }
-  };
+  } catch (err) {
+    console.error("Erro ao alternar favorito:", err);
+  }
+};
 
-  if (!currentTrack || pathname === "/player" || pathname === "/lyric")
-    return null;
+
+  if (!currentTrack || pathname === "/player" || pathname === "/lyric" || pathname === "/choosePlaylist") return null;
   if (!isExpanded) {
     return (
       <TouchableOpacity
@@ -261,7 +275,7 @@ const MiniPlayer = memo(function MiniPlayer() {
         </Text>
       </View>
       <View style={styles.addToandFavoriteView}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/choosePlaylist")}>
           <Ionicons
             name="list-outline"
             size={24}

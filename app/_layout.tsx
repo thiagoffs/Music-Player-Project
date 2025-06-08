@@ -13,8 +13,10 @@ export default function RootLayout() {
           <Stack.Screen name="radio" />
           <Stack.Screen name="player" />
           <Stack.Screen name="lyric" />
+          <Stack.Screen name="choosePlaylist" />
         </Stack>
-        <MiniPlayer />
-      </MusicProvider>
+      
+      <MiniPlayer />
+    </MusicProvider>
   );
 }

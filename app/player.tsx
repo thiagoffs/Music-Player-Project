@@ -5,13 +5,14 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Slider from "@react-native-community/slider";
 import { useThemeColors } from "@/hooks/useThemeColor";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import defaultSongIcon from "@/assets/icons/default-song.png";
 import { useDatabase } from "@/database/useDatabase";
+
 import { useEffect, memo } from "react";
 import {useTogglePlayPause,
   useTogglePreviousSong,
@@ -19,7 +20,7 @@ import {useTogglePlayPause,
   useCurrentTrack,
   useIsPlaying, usePosition,
   useDuration,
-  useSeekTo,useSetVolume
+  useSeekTo, useSetVolume
 } from "@/store/playerSelectors";
 const Player = memo(function Player() {
   const [volume, setVolumeState] = useState(1);
@@ -45,15 +46,19 @@ const Player = memo(function Player() {
     const db = await database;
     await db.removeFavoriteMusic(musicId);
   }
-  useEffect(() => {
-    const checkFavorite = async () => {
-      if (currentTrack?.id) {
-        const favorite = await (await database).isFavoriteMusic(currentTrack.id);
-        setIsFavorite(favorite);
-      }
-    };
-    checkFavorite();
-  }, [currentTrack]);
+  useFocusEffect(
+    useCallback(() => {
+      const checkFavorite = async () => {
+        if (currentTrack?.id) {
+          const favorite = await (await database).isFavoriteMusic(currentTrack.id);
+          setIsFavorite(favorite);
+        }
+      };
+
+      checkFavorite();
+    }, [currentTrack])
+  );
+
 
   const formatMilliseconds = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / 60000);
@@ -93,7 +98,7 @@ const Player = memo(function Player() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.imageContainer}>
-        <Image source={currentTrack?.image ? {uri: currentTrack.image} : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0}} />
+        <Image source={currentTrack?.image ? { uri: currentTrack.image } : defaultSongIcon} style={{ width: currentTrack?.image ? "100%" : 150, height: currentTrack?.image ? "100%" : 150, borderRadius: currentTrack?.image ? 5 : 0 }} />
       </View>
       <View
         style={[
@@ -129,7 +134,7 @@ const Player = memo(function Player() {
         </Text>
       </View>
       <View style={styles.addToandFavoriteView}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/choosePlaylist")}>
           <Ionicons
             name="list-outline"
             size={24}

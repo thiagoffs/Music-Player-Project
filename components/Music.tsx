@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, Image, ImageSourcePropType, TouchableOpacity } 
 import * as MediaLibrary from "expo-media-library";
 import { usePlayTrack } from "@/store/playerSelectors";
 import { Track } from "@/store/playerStore";
+import { useThemeColors } from "@/hooks/useThemeColor";
+
 
 type Props = {
     id?: string;
@@ -10,16 +12,18 @@ type Props = {
     url: ImageSourcePropType;
     mode?: "horizontal" | "vertical" | "grid" | "local";
     path?: string;
+    onPress?: () => void;
     colors?: any
 };
 
-export default function Music({ name, url, artist, mode = "horizontal", path, id, colors }: Props) {
+
+export default function Music({ name, url, artist, mode = "horizontal", path, id, onPress, colors }: Props) {
     if (mode === "horizontal") {
         return <HorizontalMusicIcon name={name} url={url} />
     } else if (mode == "vertical") {
         return <VerticalMusicIcon name={name} artist={artist} url={url} />
     } else if (mode == "grid") {
-        return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} />
+        return <GridMusicIcon name={name} artist={artist} url={url} path={path} id={id} colors={colors} onPress={onPress}/>
     } 
 }
 function HorizontalMusicIcon({ name, url }: { name?: string; url: ImageSourcePropType }) {
@@ -44,36 +48,45 @@ function VerticalMusicIcon({ name, url, artist }: { name?: string; url: ImageSou
 
     );
 }
-function GridMusicIcon({ name, url, artist, path, id, colors }: Props) {
+function GridMusicIcon({ name, url, artist, path, id, colors, onPress }: Props) {
+    const color = useThemeColors();
     const playTrack = usePlayTrack();
-    return (
-        <TouchableOpacity 
-            onPress={async () => {
-                    const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
-                    playTrack(
-                    { id: id ?? "", uri: path ?? "", name: name!.split(".")[0], artist },
-                    assets.assets.map((asset) => ({
-                        id: asset.id,
-                        uri: asset.uri,
-                        name: asset.filename? asset.filename.split(".")[0] : "Unknown",
-                        url: asset.albumId
+
+    const handlePress = async () => {
+        if (onPress) {
+            onPress();
+        } else {
+            const assets = await MediaLibrary.getAssetsAsync({ mediaType: "audio", first: 300 });
+            playTrack(
+                { id: id ?? "", uri: path ?? "", name: name!.split(".")[0], artist },
+                assets.assets.map((asset) => ({
+                    id: asset.id,
+                    uri: asset.uri,
+                    name: asset.filename ? asset.filename.split(".")[0] : "Unknown",
+                    url: asset.albumId
                         ? `album-${asset.albumId}`
                         : require("../assets/icons/default-song.png"),
-                        image: require("../assets/icons/default-song.png"),
-                    })) as Track[]
-                    );
-            }}
-            style={styles.songGrid}
-        >
-            <View style={{flex:1,  alignItems:"center"}}>
-                <View style ={styles.fotoGridContainer}>
+                    image: require("../assets/icons/default-song.png"),
+                })) as Track[]
+            );
+        }
+    };
+
+    return (
+        <TouchableOpacity onPress={handlePress} style={styles.songGrid}>
+            <View style={{ flex: 1, alignItems: "center" }}>
+                <View style={styles.fotoGridContainer}>
                     <Image source={url} style={styles.styleFotoGrid} />
                 </View>
-                <Text style={[styles.songTitleGrid, {color: colors.text}]} numberOfLines={3}>{name?.split(".")[0]}</Text>
-                <Text style={[styles.songSubTitleGrid, {color: colors.secondary}]} numberOfLines={1}>{artist}</Text>
+                <Text style={[styles.songTitleGrid, { color: color.text }]} numberOfLines={3}>
+                    {name?.split(".")[0]}
+                </Text>
+                <Text style={[styles.songSubTitleGrid, { color: color.textSecondary }]} numberOfLines={1}>
+                    {artist}
+                </Text>
+
             </View>
         </TouchableOpacity>
-
     );
 }
 export function LocalMusicIcon({ infoItem, playlist, colors,  }: { infoItem?: Track; playlist?: Track[]; colors?: any }) {
@@ -103,7 +116,7 @@ export function LocalMusicIcon({ infoItem, playlist, colors,  }: { infoItem?: Tr
           </View>
         </TouchableOpacity>
     );
-} 
+}
 const styles = StyleSheet.create({
     styleFoto: {
         width: 97,
@@ -125,6 +138,7 @@ const styles = StyleSheet.create({
     styleFotoGrid: {
         height: 90,
         resizeMode: "center",    
+
     },
     songHorizontal: {
         marginVertical: 10
@@ -157,12 +171,12 @@ const styles = StyleSheet.create({
     songTitleGrid: {
         fontSize: 20,
         color: "white",
-        textAlign:"center",
+        textAlign: "center",
     },
     songSubTitleGrid: {
         fontSize: 13,
         color: "#A19E9E",
-        textAlign:"center"
+        textAlign: "center"
     },
     localTittle: {
         fontSize: 14,
